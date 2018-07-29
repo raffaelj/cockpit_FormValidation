@@ -1,6 +1,8 @@
 # Form Validation Addon for Cockpit
 
-work in progress
+A form validator and form builder for [Cockpit](https://github.com/agentejo/cockpit)
+
+Work in progress! Feel free to contribute with code, bug reports or feature requests.
 
 ## Installation
 
@@ -22,7 +24,7 @@ I used the cp-fieldsmanager, where all field types are available. In my tests I 
 
 It's meant for strings and I don't know (yet), what happens if it should validate arrays.
 
-In the frontend its possible to reuse some form options like "info", "label", "group", "lst", "width".
+In the frontend it's possible to reuse some form options like "info", "label", "group", "lst", "width".
 
 ...
 
@@ -79,14 +81,14 @@ If `"response": "404"`, sender gets a 404 Path not found instead of a json respo
 
   * if form validation is active
     * key names must be alphanumeric (a-zA-Z0-9) or '-' or '_'
-    * validate if required fields are present
+    * check, if required fields are present
+    * sending data with unknown field names is not allowed
   * if field validation is active
-    * (trim)
-    * 
+    * no defaults, only specified validations
 
 ## Notes
 
-* validating to !phone could lead to false positives
+* Validating to `type:{"phone":false}` could lead to false positives. The regex is meant to allow inputs like "0123 45678" or "+49 123-456-78", but "123" returns true, too.
 * honeypot: the field name must match the option honeypot.fieldname
 
 ## To do
@@ -105,7 +107,7 @@ matches:
   * [x] honeypot (humans wouldn't fill this field)
   * [x] type (mail, phone, url)
   * [x] !type (inverse type)
-  * [ ] = string (for simple captchas or something like "Are you really sure? Type 'Yes'")
+  * [ ] equals (= string) (for simple captchas or something like "Are you really sure? Type 'Yes'")
   * [ ] contains
     * [ ] code
     * [ ] url(s)
