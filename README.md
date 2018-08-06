@@ -65,7 +65,7 @@ Create a boolean field and name it "confirm".
 {
   "honeypot": {
     "fieldname": "confirm",
-    "expected_value": 0,
+    "expected_value": "0",
     "response": "Hello spambot. A human wouldn't fill this field."
   }
 }
