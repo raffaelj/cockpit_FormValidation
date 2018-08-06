@@ -40,6 +40,9 @@ class FormValidation extends \Cockpit\AuthController {
     }
   
     function validate(){
+      
+        //for debugging
+        // $this->error["debug"][] = $this->fields;
         
         // touch original data if you don't want to do this step in your frontend
         if($this->validate_and_touch_data)
@@ -105,7 +108,7 @@ class FormValidation extends \Cockpit\AuthController {
                     return;
                 }
                 else{
-                    $this->error['honeypot'] = $honeypot['response'];
+                    $this->error[$honeypot['fieldname']] = $honeypot['response'];
                 }
                 
             }
