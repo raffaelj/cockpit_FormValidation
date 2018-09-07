@@ -147,13 +147,24 @@
                 
                 <div class="uk-form-row" show="{tab=='responses'}">
 
-                    <div class="uk-panel uk-panel-box uk-panel-card">
+                    <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
                         
                         <label class="uk-text-small">@lang('Email subject')</label>
                         <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_subject">
                         
                         <div class="uk-alert">
-                            @lang('Use double brackets to use form field contents as template, like: "New message from \{\{name\}\}"')
+                            @lang('Use double brackets to use app.name or form field contents as template, like: "[\{\{app.name\}\}] New message from \{\{name\}\}"')
+                        </div>
+
+                    </div>
+
+                    <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
+                        
+                        <label class="uk-text-small">@lang('Reply To')</label>
+                        <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.reply_to">
+                        
+                        <div class="uk-alert">
+                            @lang('Enter field name, like: "mail"')
                         </div>
 
                     </div>
