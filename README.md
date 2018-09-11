@@ -16,8 +16,6 @@ Add files to addons/FormValidation.
 
 ### Form builder
 
-![formbuilder](https://user-images.githubusercontent.com/13042193/45387246-cb872400-b615-11e8-975a-5964e4b8a08b.png)
-
 I used the cp-fieldsmanager, where all field types are available. In my tests I only used these types:
 
 * text
@@ -32,18 +30,18 @@ In the frontend it's possible to reuse some form options like "info", "label", "
 
 ### Form Validator
 
-![validation_01](https://user-images.githubusercontent.com/13042193/45387250-cc1fba80-b615-11e8-9b7c-e8e04308a0f9.png)
-![honeypot](https://user-images.githubusercontent.com/13042193/45387248-cc1fba80-b615-11e8-9ce6-81fc2993078a.png)
-
 * checks for required fields
 * checks for content types
 * sends response if validation fails
 
 The idea is to add multiple checks on each field to trick spambots without using a captcha.
 
-## custom mail subject
+## some templating
 
-![responses](https://user-images.githubusercontent.com/13042193/45387249-cc1fba80-b615-11e8-95ea-f1bd4d9f8b35.png)
+* custom mail subject
+* field for reply to
+
+see screenshots below
 
 ## How to use
 
@@ -136,3 +134,13 @@ types:
   * [ ] ascii
   * [ ] date --> must be i18n specific
   * ...
+
+## Screenshots
+
+![formbuilder](https://user-images.githubusercontent.com/13042193/45387246-cb872400-b615-11e8-975a-5964e4b8a08b.png)
+
+![validation_01](https://user-images.githubusercontent.com/13042193/45387250-cc1fba80-b615-11e8-9b7c-e8e04308a0f9.png)
+
+![honeypot](https://user-images.githubusercontent.com/13042193/45387248-cc1fba80-b615-11e8-9ce6-81fc2993078a.png)
+
+![responses](https://user-images.githubusercontent.com/13042193/45387249-cc1fba80-b615-11e8-95ea-f1bd4d9f8b35.png)
