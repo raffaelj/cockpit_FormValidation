@@ -133,7 +133,7 @@
 
                                 <div class="uk-margin uk-width-1-1" if="{form.fields[idx].validate}">
                                     
-                                    <field-object bind="form.fields[{idx}].options.validate" label="@lang('Options')" height="200px"></field-object>
+                                    <field-object bind="form.fields[{idx}].options.validate" label="@lang('Options')" height="210px"></field-object>
                                     
                                 </div>
                             
@@ -171,18 +171,19 @@
                     
                 </div>
 
+                <div class="uk-margin-large-top">
+
+                    <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                    <a class="uk-button uk-button-large" href="@route('/forms/entries')/{ form.name }" if="{ form._id }">@lang('Show entries')</a>
+
+                    <a class="uk-button uk-button-large uk-button-link" href="@route('/forms')">
+                        <span show="{ !form._id }">@lang('Cancel')</span>
+                        <span show="{ form._id }">@lang('Close')</span>
+                    </a>
+                </div>
+
             </div>
 
-        </div>
-
-        <div class="uk-margin-large-top">
-
-            <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
-
-            <a class="uk-button uk-button-large uk-button-link" href="@route('/forms')">
-                <span show="{ !form._id }">@lang('Cancel')</span>
-                <span show="{ form._id }">@lang('Close')</span>
-            </a>
         </div>
 
     </form>
@@ -242,8 +243,8 @@
             });
         }
         
-        // this.tab = 'fields';
-        this.tab = 'validate';
+        this.tab = 'fields';
+        // this.tab = 'validate';
 
         toggleTab(e) {
             this.tab = e.target.getAttribute('data-tab');
