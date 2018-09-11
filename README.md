@@ -8,13 +8,15 @@ Work in progress! Feel free to contribute with code, bug reports or feature requ
 
 Add files to addons/FormValidation.
 
-Requires:
+<del>Requires:</del>
 
-* PECL intl extension (for punycode conversion of urls and mail adresses)
+* <del>PECL intl extension (for punycode conversion of urls and mail adresses)</del>
 
 ## Features
 
 ### Form builder
+
+![formbuilder](https://user-images.githubusercontent.com/13042193/45387246-cb872400-b615-11e8-975a-5964e4b8a08b.png)
 
 I used the cp-fieldsmanager, where all field types are available. In my tests I only used these types:
 
@@ -30,11 +32,18 @@ In the frontend it's possible to reuse some form options like "info", "label", "
 
 ### Form Validator
 
+![validation_01](https://user-images.githubusercontent.com/13042193/45387250-cc1fba80-b615-11e8-9b7c-e8e04308a0f9.png)
+![honeypot](https://user-images.githubusercontent.com/13042193/45387248-cc1fba80-b615-11e8-9ce6-81fc2993078a.png)
+
 * checks for required fields
 * checks for content types
 * sends response if validation fails
 
 The idea is to add multiple checks on each field to trick spambots without using a captcha.
+
+## custom mail subject
+
+![responses](https://user-images.githubusercontent.com/13042193/45387249-cc1fba80-b615-11e8-95ea-f1bd4d9f8b35.png)
 
 ## How to use
 
@@ -59,7 +68,7 @@ Create a text field.
 
 ### Honeypot
 
-Create a boolean field and name it "confirm".
+Create a boolean field and name it "confirm". Spambots will love it :-D
 
 ```json
 {
@@ -71,7 +80,7 @@ Create a boolean field and name it "confirm".
 }
 ```
 
-If `"response": "404"`, sender gets a 404 Path not found instead of a json response.
+If `"response": "404"`, sender gets a `404 Path not found` instead of a json response.
 
 ...
 
@@ -89,17 +98,21 @@ If `"response": "404"`, sender gets a 404 Path not found instead of a json respo
 ## Notes
 
 * Validating to `type:{"phone":false}` could lead to false positives. The regex is meant to allow inputs like "0123 45678" or "+49 123-456-78", but "123" returns true, too.
-* honeypot: the field name must match the option honeypot.fieldname
+* honeypot: the field name must match the option `honeypot.fieldname`
 
 ## To do
 
+* [ ] allow mail addresses with special chars (punycode) - they are valid, but `filter_var($to, FILTER_VALIDATE_EMAIL)` returns false
+  * --> overwrite original submit function again or
+  * --> change the mail validation in cockpit core
 * [ ] i18n of error responses
 * [ ] friendly error responses
+* [ ] add a view to include via PHP frontend
 
 Setup Mailer correct:
 
-* [ ] change mail subject in settings
-* [ ] prevent `<br>` to uppercase in Html2text
+* [x] change mail subject in settings
+* [ ] <del>prevent `<br>` to uppercase in Html2text</del>
 
 matches:
 

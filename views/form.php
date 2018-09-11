@@ -133,7 +133,7 @@
 
                                 <div class="uk-margin uk-width-1-1" if="{form.fields[idx].validate}">
                                     
-                                    <field-object bind="form.fields[{idx}].options.validate" label="@lang('Options')" height="200px"></field-object>
+                                    <field-object bind="form.fields[{idx}].options.validate" label="@lang('Options')" height="210px"></field-object>
                                     
                                 </div>
                             
@@ -147,31 +147,43 @@
                 
                 <div class="uk-form-row" show="{tab=='responses'}">
 
-                    <div class="uk-panel uk-panel-box uk-panel-card">
+                    <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
                         
                         <label class="uk-text-small">@lang('Email subject')</label>
                         <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_subject">
                         
                         <div class="uk-alert">
-                            @lang('Use double brackets to use form field contents as template, like: "New message from \{\{name\}\}"')
+                            @lang('Use double brackets to use app.name or form field contents as template, like: "[\{\{app.name\}\}] New message from \{\{name\}\}"')
+                        </div>
+
+                    </div>
+
+                    <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
+                        
+                        <label class="uk-text-small">@lang('Reply To')</label>
+                        <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.reply_to">
+                        
+                        <div class="uk-alert">
+                            @lang('Enter field name, like: "mail"')
                         </div>
 
                     </div>
                     
                 </div>
 
+                <div class="uk-margin-large-top">
+
+                    <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                    <a class="uk-button uk-button-large" href="@route('/forms/entries')/{ form.name }" if="{ form._id }">@lang('Show entries')</a>
+
+                    <a class="uk-button uk-button-large uk-button-link" href="@route('/forms')">
+                        <span show="{ !form._id }">@lang('Cancel')</span>
+                        <span show="{ form._id }">@lang('Close')</span>
+                    </a>
+                </div>
+
             </div>
 
-        </div>
-
-        <div class="uk-margin-large-top">
-
-            <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
-
-            <a class="uk-button uk-button-large uk-button-link" href="@route('/forms')">
-                <span show="{ !form._id }">@lang('Cancel')</span>
-                <span show="{ form._id }">@lang('Close')</span>
-            </a>
         </div>
 
     </form>
@@ -231,8 +243,8 @@
             });
         }
         
-        // this.tab = 'fields';
-        this.tab = 'validate';
+        this.tab = 'fields';
+        // this.tab = 'validate';
 
         toggleTab(e) {
             this.tab = e.target.getAttribute('data-tab');
