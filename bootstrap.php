@@ -8,7 +8,6 @@ if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
 
 
 $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
-// $app->on('forms.submit.before', function($form, &$data, $frm) {
     
     // validation
     
@@ -68,10 +67,8 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
         $subject = "New form data for: {$formname}";
     }
     
-    // add mail subject to params
-    $_REQUEST['__mailsubject'] = $subject;
-    // This should be possible through options
-    // $options['mail_subject'] = $subject;
+    // add mail subject to options
+    $options['subject'] = $subject;
     
     // add reply_to
     if (isset($frm['reply_to']) && !empty($frm['reply_to']) && isset($data[$frm['reply_to']]) && filter_var(idn_to_ascii(trim($data[$frm['reply_to']])), FILTER_VALIDATE_EMAIL) ) {
@@ -84,5 +81,6 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
     // add altMessage
     // $options['altMessage'] = "...";
     
+    // to do...
     
 });
