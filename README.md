@@ -8,9 +8,9 @@ Work in progress! Feel free to contribute with code, bug reports or feature requ
 
 Add files to addons/FormValidation.
 
-<del>Requires:</del>
+Requires:
 
-* <del>PECL intl extension (for punycode conversion of urls and mail adresses)</del>
+* PECL intl extension (for punycode conversion of urls and mail adresses)
 
 ## Features
 
