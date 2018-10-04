@@ -1,5 +1,5 @@
 <?php
-
+// nearly exact copy of Forms/Controller/Admin.php
 namespace Forms\Controller;
 
 class Admin extends \Cockpit\AuthController {
@@ -21,7 +21,7 @@ class Admin extends \Cockpit\AuthController {
                 return false;
             }
         }
-
+        // only changed the form template dir
         return $this->render('formvalidation:views/form.php', compact('form'));
     }
 
