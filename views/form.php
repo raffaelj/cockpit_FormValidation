@@ -168,6 +168,36 @@
                         </div>
 
                     </div>
+
+                    <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
+                        
+                        <p>
+                            @lang('Create a custom mail template in config/forms/emails/formname.php to use the settings below.')
+                            <a href="https://github.com/raffaelj/cockpit_FormValidation/blob/master/README.md#form-mail-template-example" target="bubble">@lang('Example')</a>
+                        </p>
+                        
+                        <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
+                            
+                            <label class="uk-text-small">@lang('Text before mail')</label>
+                            <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_text_before">
+                            
+                            <div class="uk-alert">
+                                @lang('Use double brackets to use app.name, site_url or form field contents as template, like: "New message on \{\{site_url\}\}"')
+                            </div>
+
+                        </div>
+
+                        <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
+                            
+                            <label class="uk-text-small">@lang('Text after mail')</label>
+                            <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_text_after">
+                            
+                            <div class="uk-alert">
+                                @lang('Use double brackets to use app.name, site_url or form field contents as template, like: "New message on \{\{site_url\}\}"')
+                            </div>
+
+                        </div>
+                    </div>
                     
                 </div>
 
