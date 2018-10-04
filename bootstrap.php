@@ -1,5 +1,9 @@
 <?php
 
+// add `/addons/formvalidation/config` to global #config
+// custom template files can now be in addon config dir
+$app->path('#config', __DIR__.'/config');
+
 // ADMIN
 if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
     // load class Admin and overwrite the original Forms\Controller\Admin
@@ -37,38 +41,10 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
         
     }
     
-    
     // mail subject
-    
     $formname = isset($frm['label']) && trim($frm['label']) ? $frm['label'] : $form;
-                
-    if(isset($frm['email_subject']) && !empty($frm['email_subject'])){
-        
-        $pattern = '{{%s}}';
-        
-        $datamap = $data;
-        $datamap['app.name'] = $this['app.name'];
-
-        $map = [];
-        foreach($datamap as $var => $value){
-          
-            // $string = $this->app->helpers['utils']->safe_truncate($value, 90, $append = '...');
-                // Uncaught Error: Call to a member function safe_truncate() on string
-            // $map[sprintf($pattern, $var)] = $string;
-            
-            $map[sprintf($pattern, $var)] = $value;
-        }
-        
-        $subject = strtr($frm['email_subject'], $map);
-        
-    }
-    else{
-        // $subject = $this->app->helpers["i18n"]->get('New form data for').": {$formname}";
-        $subject = "New form data for: {$formname}";
-    }
     
-    // add mail subject to options
-    $options['subject'] = $subject;
+    $options['subject'] = isset($frm['email_subject']) && !empty($frm['email_subject']) ? $this->module('formvalidation')->map($frm['email_subject'], $data) : "New form data for: {$formname}";
     
     // add reply_to
     if (isset($frm['reply_to']) && !empty($frm['reply_to']) && isset($data[$frm['reply_to']]) && filter_var(idn_to_ascii(trim($data[$frm['reply_to']])), FILTER_VALIDATE_EMAIL) ) {
@@ -77,10 +53,71 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
         
     }
     
-    
     // add altMessage
     // $options['altMessage'] = "...";
     
     // to do...
     
 });
+
+$app->module('formvalidation')->extend([
+    
+    'map' => function($str = null, $datamap = []) {
+        
+        if (!is_string($str)) return;
+        
+        $pattern = '{{%s}}';
+        
+        $datamap['app.name'] = $this->app['app.name'];
+        $datamap['site_url'] = $this->app['site_url'];
+
+        $map = [];
+        foreach($datamap as $var => $value){
+            $map[sprintf($pattern, $var)] = $value;
+        }
+        
+        $out = strtr($str, $map);
+        
+        return $out;
+        
+    },
+    
+    'nameToLabel' => function($data = [], $frm = []) {
+        
+        if (!isset($frm['fields']))
+            return $data;
+        
+        $labels = array_column($frm['fields'], 'label', 'name');
+    
+        $out = [];
+
+        foreach($data as $key => $val){
+          
+            if( array_key_exists($key, $labels) ){
+                
+                $label = htmlspecialchars($labels[$key]);
+                
+                // reverse simple templating in labels with BBCode url and route directory
+                $label = str_replace('{{route}}', "", $label);
+                
+                // transform BBCode urls
+                $label = preg_replace('@\[url=([^]]*)\]([^[]*)\[/url\]@', '$2', $label);
+                
+            }
+            else { $label = $key; }
+            
+            $out[$label] = $val;
+          
+        }
+        
+        return $out;
+        
+    },
+    /*
+    'createMailTemplate' => function($name) {
+        
+        // to do...
+        
+    }
+    */
+]);
