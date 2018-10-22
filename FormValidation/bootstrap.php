@@ -48,6 +48,18 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
         $options['reply_to'] = trim($data[$frm['reply_to']]);
         
     }
+
+    // custom mailer settings
+    if (isset($frm['mailer'])) {
+
+        // overwrite mailer service
+        $this->service('mailer', function() use($frm){
+            $mailer    = new \Mailer($frm['mailer']['transport'] ?? 'mail', $frm['mailer']);
+            return $mailer;
+        });
+
+    }
+    
     
     // add altMessage
     // $options['altMessage'] = "...";

@@ -85,6 +85,7 @@
                     <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="fields">{ App.i18n.get('Fields') }</a></li>
                     <li class="{ tab=='validate' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="validate">{ App.i18n.get('Validate') }</a></li>
                     <li class="{ tab=='responses' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="responses">{ App.i18n.get('Responses') }</a></li>
+                    <li class="{ tab=='mailer' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="mailer">{ App.i18n.get('Mailer Settings') }</a></li>
                 </ul>
                 
                 <div class="uk-form-row" show="{tab=='fields'}">
@@ -109,7 +110,6 @@
 
                     
                     <div class="uk-margin" if="{form.validate}">
-                        <!--<field-object bind="form.validate_options" label="@lang('Options')"></field-object>-->
                         
                         <div class="uk-margin uk-panel uk-panel-box uk-panel-card" data-idx="{idx}" each="{ field,idx in form.fields }">
                             
@@ -200,6 +200,46 @@
                     </div>
                     
                 </div>
+                
+                <div class="uk-form-row" show="{tab=='mailer'}">
+
+                    @hasaccess?('cockpit', 'sysinfo')
+                    <p><a href="@route('/settings/edit')">@lang('System Settings')</a></p>
+                    @endif
+
+                    @if(isset($app['config']['mailer']))
+
+                        @hasaccess?('cockpit', 'sysinfo')
+                            <pre>{{ print_r($app['config']['mailer']) }}</pre>
+                        @else
+                            <p>@lang('Global mailer settings are set').</p>
+                        @endif
+
+                    @else
+                        <p>@lang('Global Mailer settings are not defined'). @lang('Add them to') <code>config/config.yaml</code>:</p>
+                        <pre><code>mailer:
+    from      : noreply@example.com
+    from_name : John Doe
+    transport : smtp
+    host      : smtphost.example.com
+    user      : johndoe
+    password  : xxpasswordxx
+    port      : 587
+    auth      : true
+    encryption: starttls</code></pre>
+                    @endif
+
+                    @hasaccess?('forms', 'manage')
+                    <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
+
+                        <p>@lang('Custom mailer settings')</p>
+
+                        <field-object bind="form.mailer"></field-object>
+
+                    </div>
+                    @endif
+
+                </div>
 
                 <div class="uk-margin-large-top">
 
@@ -274,7 +314,7 @@
         }
         
         this.tab = 'fields';
-        // this.tab = 'validate';
+        // this.tab = 'mailer';
 
         toggleTab(e) {
             this.tab = e.target.getAttribute('data-tab');

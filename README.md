@@ -100,17 +100,12 @@ If `"response": "404"`, sender gets a `404 Path not found` instead of a json res
 
 ## To do
 
-* [ ] allow mail addresses with special chars (punycode) - they are valid, but `filter_var($to, FILTER_VALIDATE_EMAIL)` returns false
+* [x] allow mail addresses with special chars (punycode) - they are valid, but `filter_var($to, FILTER_VALIDATE_EMAIL)` returns false
   * --> overwrite original submit function again or
-  * --> change the mail validation in cockpit core
+  * --> change the mail validation in cockpit core --> [now in core](https://github.com/agentejo/cockpit/commit/745df212d02be2609b5d13ff81aaa4226f68fb32)
 * [ ] i18n of error responses
 * [ ] friendly error responses
 * [ ] add a view to include via PHP frontend
-
-Setup Mailer correct:
-
-* [x] change mail subject in settings
-* [ ] <del>prevent `<br>` to uppercase in Html2text</del>
 
 matches:
 
@@ -167,6 +162,15 @@ $email_text_after = isset($frm['email_text_after']) && !empty($frm['email_text_a
 <?php endif; ?>
 </body></html>
 ```
+
+## Changelog
+
+**2018-10-22**
+
+* moved addon to subfolder
+* disabled experimental custom #config path
+* added warning if global mailer settings aren't defined
+* added custom mailer settings to define individual mailers per form
 
 ## Screenshots
 
