@@ -1,9 +1,5 @@
 <?php
 
-// add `/addons/formvalidation/config` to global #config
-// custom template files can now be in addon config dir
-$app->path('#config', __DIR__.'/config');
-
 // ADMIN
 if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
     // load class Admin and overwrite the original Forms\Controller\Admin

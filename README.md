@@ -137,7 +137,9 @@ types:
 
 ## Form Mail Template Example
 
-Create a custom mail template in `config/forms/emails/formname.php` or rename the existing `config/forms/emails/contactform.php.dist` in this addon folder to use the settings "email_text_before" and "email_text_after".
+Create a custom mail template in `config/forms/emails/formname.php` to use the settings "email_text_before" and "email_text_after".
+
+Example:
 
 ```php
 <?php
