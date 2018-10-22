@@ -1,12 +1,4 @@
 <?php
-/**
-  * Cockpit FormValidation -- a form validator and form builder for Cockpit (https://github.com/agentejo/cockpit)
-  * @version 0.0.1
-  * @author Raffael Jesche
-  * @link https://github.com/raffaelj/cockpit-FormValidation/
-  * @copyright ...
-  * @license ...
-  */
 
 namespace Forms\Controller;
 
@@ -190,15 +182,15 @@ class FormValidation extends \Cockpit\AuthController {
         $ret = false;
         switch($match_type){
             
-            case "mail":
+            case 'mail':
                 $ret = filter_var(idn_to_ascii($this->data[$field]), FILTER_VALIDATE_EMAIL);
                 break;
                 
-            case "phone":
+            case 'phone':
                 $ret = !preg_match('~[^-\s\d./()+]~', $this->data[$field]);
                 break;
                 
-            case "url":
+            case 'url':
                 $ret = filter_var(idn_to_ascii($this->data[$field]), FILTER_VALIDATE_URL);
                 break;
             
