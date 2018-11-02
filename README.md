@@ -8,8 +8,9 @@ Work in progress! Feel free to contribute with code, bug reports or feature requ
 
 Add files to addons/FormValidation.
 
-Requires:
+## Requirements:
 
+* Cockpit version >= 0.7.2
 * PECL intl extension (for punycode conversion of urls and mail adresses)
 
 ## Features
@@ -98,13 +99,35 @@ If `"response": "404"`, sender gets a `404 Path not found` instead of a json res
 * Validating to `type:{"phone":false}` could lead to false positives. The regex is meant to allow inputs like "0123 45678" or "+49 123-456-78", but "123" returns true, too.
 * honeypot: the field name must match the option `honeypot.fieldname`
 
+## i18n
+
+Add a lang file in `path/to/cockpit/config/formvalidation/i18n/de.php`
+
+Sample for German translation:
+
+```php
+<?php
+
+return [
+    'is required' => 'ist ein Pflichtfeld',
+    'does not exist' => 'existiert nicht',
+    'Hello spambot' => 'Hallo Spambot',
+    'must be mail' => 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+    'must be phone' => 'Bitte geben Sie eine Telefonnummer ein.',
+    'must be url' => 'muss eine Url sein',
+    'must not be mail' => 'In diesem Feld darf keine E-Mail-Adresse stehen (um Spambots zu verwirren).',
+    'must not be phone' => 'In diesem Feld darf keine Telefonnummer stehen (um Spambots zu verwirren).',
+    'must not be url' => 'In diesem Feld darf keine Url stehen (um Spambots zu verwirren).'
+];
+```
+
 ## To do
 
 * [x] allow mail addresses with special chars (punycode) - they are valid, but `filter_var($to, FILTER_VALIDATE_EMAIL)` returns false
   * --> overwrite original submit function again or
   * --> change the mail validation in cockpit core --> [now in core](https://github.com/agentejo/cockpit/commit/745df212d02be2609b5d13ff81aaa4226f68fb32)
-* [ ] i18n of error responses
-* [ ] friendly error responses
+* [x] i18n of error responses
+* [x] friendly error responses --> use i18n
 * [ ] add a view to include via PHP frontend
 
 matches:
@@ -164,6 +187,11 @@ $email_text_after = isset($frm['email_text_after']) && !empty($frm['email_text_a
 ```
 
 ## Changelog
+
+**2018-11-02**
+
+* added i18n
+* now throws response as an Exception if using Cockpit as a library
 
 **2018-10-22**
 

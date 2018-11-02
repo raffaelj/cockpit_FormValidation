@@ -2,35 +2,44 @@
 
 namespace Forms\Controller;
 
-class FormValidation extends \Cockpit\AuthController {
-  
+class FormValidation extends \LimeExtra\Controller {
+
     /*
       Notes:
-      
+
         requires: PECL intl extension (for punycode conversion of urls and mail adresses)
-        
+
         Work in progress! Feel free to contribute with code, bug reports or feature requests.
-        
+
     */
-  
+
     protected $error = [];
     protected $fields = [];
     public $data = [];
     protected $exit = false;
     protected $allow_extra_fields = false;
     protected $validate_and_touch_data = false;
-  
-    function __construct($data = [], $frm = []){
+    public $i18n;
+
+    function __construct($app, $data = [], $frm = []){
 
         $this->data = $data;
-        if(isset($frm['fields'])) $this->fields = $frm['fields'];
-        if(isset($frm['allow_extra_fields'])) $this->allow_extra_fields = $frm['allow_extra_fields'];
-        if(isset($frm['validate_and_touch_data'])) $this->validate_and_touch_data = $frm['validate_and_touch_data'];
+
+        if(isset($frm['fields']))
+            $this->fields = $frm['fields'];
+
+        if(isset($frm['allow_extra_fields']))
+            $this->allow_extra_fields = $frm['allow_extra_fields'];
+
+        if(isset($frm['validate_and_touch_data']))
+            $this->validate_and_touch_data = $frm['validate_and_touch_data'];
+
+        parent::__construct($app);
 
         $this->validate();
 
     }
-  
+
     function validate(){
       
         //for debugging
@@ -105,7 +114,7 @@ class FormValidation extends \Cockpit\AuthController {
                 
             }
             else{
-                $this->error["honeypot"] = "Hello spambot";
+                $this->error["honeypot"] = $this('i18n')->get('Hello spambot');
             }
         }
             
@@ -119,7 +128,8 @@ class FormValidation extends \Cockpit\AuthController {
             
             if(!isset($this->data[$name]) || empty($this->data[$name])){
                 
-                $this->error[$name][] = "is required";
+                // $this->error[$name][] = "is required";
+                $this->error[$name][] = $this('i18n')->get('is required');
                 
                 // don't validate this field again
                 if (($key = array_search($name, $validate)) !== false)
@@ -133,9 +143,9 @@ class FormValidation extends \Cockpit\AuthController {
             // to do ...
         
         // 4. type
-        foreach($validate as $name){
+        foreach($validate as $name) {
             
-            if(isset($type[$name])){
+            if (isset($type[$name])) {
                 
                 foreach($type[$name] as $match_type => $not_inverse){
                     
@@ -144,7 +154,8 @@ class FormValidation extends \Cockpit\AuthController {
                     if($not_inverse && !$match || !$not_inverse && $match){
                         $must = $match ? "must be" : "must not be";
                         $must = !$not_inverse ? "must not be" : "must be";
-                        $this->error[$name][] = "$must $match_type";
+                        // $this->error[$name][] = "$must $match_type";
+                        $this->error[$name][] = $this('i18n')->get("$must $match_type");
                     }
                     
                 }
@@ -156,59 +167,58 @@ class FormValidation extends \Cockpit\AuthController {
         
     }
   
-    function alnumKeys($arr){
-        
+    function alnumKeys($arr) {
+
         // returns false if any key name is not alphanumeric or '-' or '_'
-        
+
         $ret = true;
         $valid = ["-", "_"];
-        
+
         foreach(array_keys($arr) as $key){
             if( !ctype_alnum( str_replace($valid, "", $key) ) ){
                 $this->error[$key][] = "allowed characters in key names: 'a-zA-Z0-9', '-' and '_'";
                 $ret = false;
             }
-                
+
         }
-        
+
         return $ret;
-        
+
     }
-  
-    function matchType($field, $match_type/*, $not_inverse = true*/){
-        
-        // $this->error["matchType"][$match_type][] = $not_inverse;
-        
+
+    function matchType($field, $match_type) {
+
         $ret = false;
         switch($match_type){
-            
+
             case 'mail':
                 $ret = filter_var(idn_to_ascii($this->data[$field]), FILTER_VALIDATE_EMAIL);
                 break;
-                
+
             case 'phone':
                 $ret = !preg_match('~[^-\s\d./()+]~', $this->data[$field]);
                 break;
-                
+
             case 'url':
                 $ret = filter_var(idn_to_ascii($this->data[$field]), FILTER_VALIDATE_URL);
                 break;
-            
+
         }
-        
+
         return $ret;
-        
+
     }
-    
-    function response(){
-      
+
+    function response() {
+
         if($this->exit)
             return false;
-        
+
         if(!empty($this->error))
             return $this->error;
-        
+
         return true;
+
     }
-  
+
 }

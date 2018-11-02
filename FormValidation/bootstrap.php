@@ -6,37 +6,46 @@ if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
     include_once(__DIR__.'/Controller/Admin.php');
 }
 
+// init + load i18n
+$app('i18n')->locale = $app->retrieve('i18n', 'en');
+$locale = $app->module('cockpit')->getUser('i18n', $app('i18n')->locale);
 
+if ($translationspath = $app->path("#config:formvalidation/i18n/{$locale}.php")) {
+    $app('i18n')->locale = $locale;
+    $app('i18n')->load($translationspath, $locale);
+}
+
+// validation
 $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
-    
-    // validation
-    
+
     if (isset($frm['validate']) && $frm['validate']) {
-            
+
         // load validation class
         require_once(__DIR__ . '/Controller/FormValidation.php');
-        
-        $validated = new Forms\Controller\FormValidation($data, $frm);
-        
+
+        $validated = new Forms\Controller\FormValidation($this, $data, $frm);
+
         // send 404 to sender
-        if (false==$validated->response()) {
-            $this->response->body = false;
-            die;
+        if (false == $validated->response()) {
+            $this->stop(404);
         }
-        
+
         // continue if true or send error messages to sender
-        if (true!==$validated->response()) {
-            
-            $data = ["error" => $validated->response(), "data" => $validated->data];
-            
-            $this->response->mime = 'json';
-            $this->response->body = $data;
-            die;
-            
+        if (true !== $validated->response()) {
+
+            $return = ['error' => $validated->response(), 'data' => $validated->data];
+
+            // throw Exception when using cockpit as library
+            if (!COCKPIT_API_REQUEST && !COCKPIT_ADMIN) {
+                throw new Exception(json_encode($return));
+            }
+
+            $this->stop($return, 412);
+
         }
-        
+
     }
-    
+
     // mail subject
     $formname = isset($frm['label']) && trim($frm['label']) ? $frm['label'] : $form;
     
