@@ -111,18 +111,15 @@ $app->module('formvalidation')->extend([
         foreach($data as $key => $val){
           
             if( array_key_exists($key, $labels) ){
-                
+
                 $label = htmlspecialchars($labels[$key]);
-                
-                // reverse simple templating in labels with BBCode url and route directory
-                $label = str_replace('{{route}}', "", $label);
-                
-                // transform BBCode urls
-                $label = preg_replace('@\[url=([^]]*)\]([^[]*)\[/url\]@', '$2', $label);
-                
+
+            } else {
+
+                $label = $key;
+
             }
-            else { $label = $key; }
-            
+
             $out[$label] = $val;
           
         }
