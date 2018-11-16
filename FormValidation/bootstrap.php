@@ -1,11 +1,5 @@
 <?php
 
-// ADMIN
-if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
-    // load class Admin and overwrite the original Forms\Controller\Admin
-    include_once(__DIR__.'/Controller/Admin.php');
-}
-
 // init + load i18n
 $app('i18n')->locale = $app->retrieve('i18n', 'en');
 $locale = $app->module('cockpit')->getUser('i18n', $app('i18n')->locale);
@@ -135,3 +129,8 @@ $app->module('formvalidation')->extend([
     }
     */
 ]);
+
+// ADMIN
+if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
+    include('admin.php');
+}
