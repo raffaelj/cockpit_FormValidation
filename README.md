@@ -188,6 +188,12 @@ $email_text_after = isset($frm['email_text_after']) && !empty($frm['email_text_a
 
 ## Changelog
 
+**2018-11-16**
+
+* improved Admin.php overwrite
+* added version numbers and git tags
+* fixed empty forms index page in upcoming Cockpit v0.8.4 [original changed](https://github.com/agentejo/cockpit/commit/fd3dbe69247f62db033fa7eeae69c5c098e29e44#diff-043b1f3bccf6ef55f3cda2918e79daae)
+
 **2018-11-02**
 
 * added i18n
