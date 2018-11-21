@@ -53,7 +53,7 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
     }
 
     // custom mailer settings
-    if (isset($frm['mailer'])) {
+    if (!empty($frm['mailer'])) {
 
         // overwrite mailer service
         $this->service('mailer', function() use($frm){
