@@ -1,7 +1,7 @@
 <?php
 
 // nearly exact copy of Forms/Controller/Admin.php
-namespace Forms\Controller;
+namespace FormValidation\Controller;
 
 class CustomAdmin extends \Cockpit\AuthController {
 
