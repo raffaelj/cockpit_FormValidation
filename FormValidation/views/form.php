@@ -232,7 +232,7 @@
                     @hasaccess?('forms', 'manage')
                     <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
 
-                        <p>@lang('Custom mailer settings')</p>
+                        <p>@lang('Custom mailer settings') (@lang('experimental')) <i class="uk-icon-warning" title="@lang('The mailer settings are stored in the form definitions. Be aware of this fact, if others could access this information.')" data-uk-tooltip></i></p>
 
                         <field-object bind="form.mailer"></field-object>
 
