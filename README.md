@@ -1,12 +1,17 @@
 # Form Validation Addon for Cockpit
 
-A form validator and form builder for [Cockpit](https://github.com/agentejo/cockpit)
+A form validator and form builder for [Cockpit CMS](https://github.com/agentejo/cockpit)
 
 Work in progress! Feel free to contribute with code, bug reports or feature requests.
 
 ## Installation
 
-Add files to addons/FormValidation.
+Copy this repository into `/addons` and name it `FormValidation` or
+
+```bash
+cd path/to/cockpit
+git clone https://github.com/raffaelj/cockpit_FormValidation.git addons/FormValidation
+```
 
 ## Requirements:
 
