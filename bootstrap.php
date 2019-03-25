@@ -1,5 +1,19 @@
 <?php
 
+// controller autoload and path short codes need a folder naming pattern
+// return if addon folder has wrong name, e. g. "cockpit_AddonName"
+$name = 'FormValidation';
+
+if (!isset($app['modules'][strtolower($name)])) {
+
+    // display a warning on top of admin ui
+    $app->on('app.layout.contentbefore', function() use ($name) {
+        echo '<p><span class="uk-badge uk-badge-warning"><i class="uk-margin-small-right uk-icon-warning"></i>' . $name . '</span> You have to rename the addon folder <code>' . basename(__DIR__) . '</code> to <code>' . $name . '</code>.</p>';
+    });
+
+    return;
+}
+
 // init + load i18n
 $app('i18n')->locale = $app->retrieve('i18n', 'en');
 $locale = $app->module('cockpit')->getUser('i18n', $app('i18n')->locale);
