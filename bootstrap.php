@@ -1,4 +1,15 @@
 <?php
+/**
+ * Form validator and form builder for Cockpit CMS
+ * 
+ * @see       https://github.com/raffaelj/cockpit_FormValidation/
+ * @see       https://github.com/agentejo/cockpit/
+ * 
+ * @version   0.2.4
+ * @author    Raffael Jesche
+ * @license   MIT
+ * @note      work in progress
+ */
 
 // controller autoload and path short codes need a folder naming pattern
 // return if addon folder has wrong name, e. g. "cockpit_AddonName"
