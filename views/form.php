@@ -1,3 +1,5 @@
+<script type="riot/tag" src="@base('formvalidation:assets/components/formvalidation-fieldsmanager.tag')"></script>
+
 <div>
     <ul class="uk-breadcrumb">
         <li><a href="@route('/forms')">@lang('Forms')</a></li>
@@ -79,7 +81,6 @@
             </div>
 
             <div class="uk-width-medium-3-4">
-               <div class="uk-panel uk-panel-box uk-panel-card">
 
                 <ul class="uk-tab uk-margin-large-bottom">
                     <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="fields">{ App.i18n.get('Fields') }</a></li>
@@ -90,7 +91,7 @@
                 
                 <div class="uk-form-row" show="{tab=='fields'}">
 
-                    <cp-fieldsmanager bind="form.fields" listoption="true" templates="{ templates }"></cp-fieldsmanager>
+                    <formvalidation-fieldsmanager bind="form.fields" listoption="true" templates="{ templates }"></cp-fieldsmanager>
 
                 </div>
                 
@@ -203,10 +204,6 @@
                 
                 <div class="uk-form-row" show="{tab=='mailer'}">
 
-                    @hasaccess?('cockpit', 'sysinfo')
-                    <p><a href="@route('/settings/edit')">@lang('System Settings')</a></p>
-                    @endif
-
                     @if(isset($app['config']['mailer']))
 
                         @hasaccess?('cockpit', 'sysinfo')
@@ -216,7 +213,11 @@
                         @endif
 
                     @else
-                        <p>@lang('Global Mailer settings are not defined'). @lang('Add them to') <code>config/config.yaml</code>:</p>
+                        <p>@lang('Global Mailer settings are not defined'). @lang('Add them to') <code>config/config.yaml</code>.
+                        @hasaccess?('cockpit', 'sysinfo')
+                        <a class="uk-button uk-button-small uk-margin-small-left" href="@route('/settings/edit')">@lang('System Settings')</a>
+                        @endif
+                        </p>
                         <pre><code>mailer:
     from      : noreply@example.com
     from_name : John Doe
@@ -241,17 +242,18 @@
 
                 </div>
 
-                <div class="uk-margin-large-top">
+                <cp-actionbar>
+                    <div class="uk-container uk-container-center">
 
-                    <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
-                    <a class="uk-button uk-button-large" href="@route('/forms/entries')/{ form.name }" if="{ form._id }">@lang('Show entries')</a>
+                        <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                        <a class="uk-button uk-button-large" href="@route('/forms/entries')/{ form.name }" if="{ form._id }">@lang('Show entries')</a>
 
-                    <a class="uk-button uk-button-large uk-button-link" href="@route('/forms')">
-                        <span show="{ !form._id }">@lang('Cancel')</span>
-                        <span show="{ form._id }">@lang('Close')</span>
-                    </a>
-                </div>
-
+                        <a class="uk-button uk-button-large uk-button-link" href="@route('/forms')">
+                            <span show="{ !form._id }">@lang('Cancel')</span>
+                            <span show="{ form._id }">@lang('Close')</span>
+                        </a>
+                    </div>
+                </cp-actionbar>
             </div>
 
         </div>
@@ -270,7 +272,7 @@
 
             this.trigger('update');
 
-            // bind clobal command + save
+            // bind global command + save
             Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
 
                 e.preventDefault();
@@ -314,7 +316,6 @@
         }
         
         this.tab = 'fields';
-        // this.tab = 'mailer';
 
         toggleTab(e) {
             this.tab = e.target.getAttribute('data-tab');

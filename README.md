@@ -193,6 +193,17 @@ $email_text_after = isset($frm['email_text_after']) && !empty($frm['email_text_a
 
 ## Changelog
 
+**0.2.5**
+
+* added custom fieldsmanager to prevent choosing unsupported field types
+* fixed route without name - now the form manager is active when creating a new form, too
+* minor cleanup
+
+**0.2.4**
+
+* moved addon files to root
+* minor changes
+
 **2018-11-16**
 
 * improved Admin.php overwrite
