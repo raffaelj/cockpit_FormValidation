@@ -5,7 +5,7 @@
  * @see       https://github.com/raffaelj/cockpit_FormValidation/
  * @see       https://github.com/agentejo/cockpit/
  * 
- * @version   0.2.5
+ * @version   0.2.6
  * @author    Raffael Jesche
  * @license   MIT
  * @note      work in progress
@@ -26,11 +26,9 @@ if (!isset($app['modules'][strtolower($name)])) {
 }
 
 // init + load i18n
-$app('i18n')->locale = $app->retrieve('i18n', 'en');
 $locale = $app->module('cockpit')->getUser('i18n', $app('i18n')->locale);
 
 if ($translationspath = $app->path("#config:formvalidation/i18n/{$locale}.php")) {
-    $app('i18n')->locale = $locale;
     $app('i18n')->load($translationspath, $locale);
 }
 
