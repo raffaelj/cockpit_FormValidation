@@ -40,133 +40,155 @@ class FormValidation extends \LimeExtra\Controller {
 
     }
 
-    function validate(){
-      
-        //for debugging
-        // $this->error["debug"][] = $this->fields;
-        
+    function validate() {
+
         // touch original data if you don't want to do this step in your frontend
         if($this->validate_and_touch_data)
             foreach($this->data as $key => &$val)
                 $this->data[$key] = htmlspecialchars(strip_tags(trim($val)));
-        
-        // compare sent field names with names from the form builder
-        if(!$this->allow_extra_fields){
-            
-            $diff = array_diff(array_keys($this->data), array_column($this->fields, "name"));
-            
-            if(!empty($diff)){
-                $this->error["validator"][] = "These fields are not allowed: ". implode(", ", $diff);
-                return;
-            }
-            
-        }
-        
+
         // check, if key names are alphanumeric
-        if(!$this->alnumKeys($this->data))
+        if(!$this->alnumKeys($this->data)) {
+            // error message will be applied in alnumKeys()
             return;
-        
+        }
+
         // check, for validation options
         if (empty($this->fields)){
-          
+
             // no validation options available
-            
+
             // to do ...
-            
+
             return;
-            
+
         }
-        
+
         // validations
         $required = [];
         $validate = [];
         $type = [];
         $honeypot = false;
-        foreach($this->fields as $field){
-            
-            if(isset($field['required']) && $field['required'])
+
+        foreach($this->fields as $field) {
+
+            if (isset($field['required']) && $field['required']) {
                 $required[] = $field['name'];
-            
-            if(isset($field['validate']) && $field['validate'])
+            }
+
+            if (isset($field['validate']) && $field['validate']
+                && !isset($field['options']['validate']['honeypot']) // don't validate honeypot twice
+                ) {
+
                 $validate[] = $field['name'];
-            
-            if(isset($field['options']['validate']['honeypot']))
-                $honeypot = $field['options']['validate']['honeypot'];
-            
-            if(isset($field['options']['validate']['type']) && array_key_exists($field['name'], $this->data))
+            }
+
+            if (isset($field['options']['validate']['honeypot'])) {
+                $honeypot = $field;
+            }
+
+            if (isset($field['options']['validate']['type'])
+                && array_key_exists($field['name'], $this->data)) {
+
                 $type[$field['name']] = $field['options']['validate']['type'];
-            
+            }
+                
+
         }
-        
+
         // 1. honeypot
-        if($honeypot && isset($this->data[$honeypot['fieldname']])
-          && $this->data[$honeypot['fieldname']] != $honeypot['expected_value']){
-            
-            if(isset($honeypot['response'])){
-                
-                if($honeypot['response'] == '404'){
-                    $this->exit = true;
-                    return;
+        if ($honeypot) {
+
+            $honeypotOptions = $honeypot['options']['validate']['honeypot'];
+
+            $honeypotName = $honeypot['options']['attr']['name'] ?? $honeypotOptions['fieldname'] ?? $honeypot['name'];
+
+            if (isset($this->data[$honeypotName]) && $this->data[$honeypotName] != $honeypotOptions['expected_value']) {
+
+                if (isset($honeypotOptions['response'])) {
+
+                    if ($honeypotOptions['response'] == '404'){
+                        $this->exit = true;
+                        return;
+                    }
+                    else {
+                        $this->error[$honeypotName] = $honeypotOptions['response'];
+                    }
+
                 }
-                else{
-                    $this->error[$honeypot['fieldname']] = $honeypot['response'];
+                else {
+                    $this->error[$honeypotName] = $this('i18n')->get('Hello spambot');
                 }
-                
+
+                return;
+
             }
-            else{
-                $this->error["honeypot"] = $this('i18n')->get('Hello spambot');
-            }
+
         }
-            
-        // don't validate honeypot again
-        if (($key = array_search($honeypot['fieldname'], $validate)) !== false)
-            unset($validate[$key]);
-        
-        
-        // 2. required
+
+        // 2. compare sent field names with names from the form builder
+        if (!$this->allow_extra_fields) {
+
+            $diff = array_diff(array_keys($this->data), array_column($this->fields, 'name'));
+
+            // honeypot might have a positive projection (will always be sent)
+            // with a different name, then the field name
+            if ($honeypot) {
+                if (($key = array_search($honeypotName, $diff)) !== false) {
+                    unset($diff[$key]);
+                }
+            }
+
+            if (!empty($diff)) {
+
+                $this->error["validator"][] = 'These fields are not allowed: '. implode(', ', $diff);
+                return;
+
+            }
+
+        }
+
+        // 3. required
         foreach($required as $name){
-            
+
             if(!isset($this->data[$name]) || empty($this->data[$name])){
-                
-                // $this->error[$name][] = "is required";
+
                 $this->error[$name][] = $this('i18n')->get('is required');
-                
+
                 // don't validate this field again
                 if (($key = array_search($name, $validate)) !== false)
                     unset($validate[$key]);
 
             }
-            
+
         }
-        
+
         // 3. contains
             // to do ...
-        
+
         // 4. type
         foreach($validate as $name) {
-            
+
             if (isset($type[$name])) {
-                
+
                 foreach($type[$name] as $match_type => $not_inverse){
-                    
+
                     $match = $this->matchType($name, $match_type);
-                    
+
                     if($not_inverse && !$match || !$not_inverse && $match){
                         $must = $match ? "must be" : "must not be";
                         $must = !$not_inverse ? "must not be" : "must be";
-                        // $this->error[$name][] = "$must $match_type";
                         $this->error[$name][] = $this('i18n')->get("$must $match_type");
                     }
-                    
+
                 }
-                
+
             }
-            
-            
+
         }
-        
+
     }
-  
+
     function alnumKeys($arr) {
 
         // returns false if any key name is not alphanumeric or '-' or '_'
