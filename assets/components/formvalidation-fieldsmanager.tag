@@ -12,6 +12,22 @@
                         <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" pattern="[a-zA-Z0-9_]+" required>
                     </div>
 
+                    <div class="uk-flex-item-2 uk-flex" if="{ field.type == 'honeypot' }">
+                        <span class="uk-icon-beer uk-margin-small-top" title="{ App.i18n.get('Honeypot') }" data-uk-tooltip></span>
+                    </div>
+
+                    <div class="uk-flex-item-2 uk-flex" if="{ field.type == 'privacynotice' }">
+                        <span class="uk-icon-umbrella uk-margin-small-top" title="{ App.i18n.get('Privacy Notice') }" data-uk-tooltip></span>
+                    </div>
+
+                    <div class="uk-flex-item-2 uk-flex">
+                        <field-boolean bind="fields[{idx}].required" label=" " title="{ App.i18n.get('Required') }" data-uk-tooltip></field-boolean>
+                    </div>
+
+                    <div class="uk-flex-item-2 uk-flex">
+                        <field-boolean bind="fields[{idx}].validate" label=" " title="{ App.i18n.get('Validate') }" data-uk-tooltip></field-boolean>
+                    </div>
+
                     <div class="uk-width-1-4">
                         <div class="uk-form-select" data-uk-form-select>
                             <div class="uk-form-icon">
@@ -75,6 +91,8 @@
 
             <div class="uk-margin-top ref-tab">
                 <div>
+<span class="uk-hidden">{ field.options = (field.type == 'honeypot' && Object.keys(field.options).length === 0) ? honeypot_options : field.options }</span>
+<span class="uk-hidden">{ field.validate = (field.type == 'honeypot') ? true : field.validate }</span>
                     <div class="uk-form-row">
 
                         <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Type') }:</label>
@@ -109,9 +127,8 @@
                     <div class="uk-form-row">
                         <field-boolean bind="field.required" label="{ App.i18n.get('Required') }"></field-boolean>
                     </div>
-
-                    <div class="uk-form-row" if="{opts.localize !== false}">
-                        <field-boolean bind="field.localize" label="{ App.i18n.get('Localize') }"></field-boolean>
+                    <div class="uk-form-row">
+                        <field-boolean bind="field.validate" label="{ App.i18n.get('Validate') }"></field-boolean>
                     </div>
 
                 </div>
@@ -167,33 +184,33 @@
         this.field = null;
         this.reorder = false;
 
-        // get all available fields
-
-        this.fieldtypes = [];
-
-        this.allowed_fieldtypes = [
-            'text',
-            'textarea',
-            'date',
-            'boolean',
-            'select',
-            // 'multipleselect',
+        this.fieldtypes = [
+            {name:'Text', value:'text'},
+            {name:'Textarea', value:'textarea'},
+            {name:'Date', value:'date'},
+            {name:'Boolean', value:'boolean'},
+            {name:'Select', value:'select'},
+            {name:'Honeypot', value:'honeypot'},
+            // {name:'Multipleselect', value:'multipleselect'},
         ];
-
-        for (var tag in riot.tags) {
-
-            if (tag.indexOf('field-')==0) {
-
-                f = tag.replace('field-', '');
-
-                // this.fieldtypes.push({name:f, value:f});
-                if (this.allowed_fieldtypes.indexOf(f) != -1) {
-                    this.fieldtypes.push({name:f, value:f});
-                }
-
+        
+        this.honeypot_options = {
+          "attr": {
+            "name": "confirm",
+            "id": "confirm",
+            "value": "1",
+            "style": "display:none !important",
+            "tabindex": "-1"
+          },
+          "validate": {
+            "honeypot": {
+              "fieldname": "confirm",
+              "expected_value": "0",
+              "response": "Spam bots are not welcome here."
             }
-        }
-console.log(this.fieldtypes);
+          }
+        };
+
         // sort by field name
 
         this.fieldtypes = this.fieldtypes.sort(function(fieldA, fieldB) {

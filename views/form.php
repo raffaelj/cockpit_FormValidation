@@ -1,3 +1,4 @@
+
 <script type="riot/tag" src="@base('formvalidation:assets/components/formvalidation-fieldsmanager.tag')"></script>
 
 <div>
@@ -77,6 +78,11 @@
                         <field-boolean bind="form.save_entry" label="@lang('Save form data')"></field-boolean>
                     </div>
 
+                    <div class="uk-margin">
+                        <field-boolean bind="form.validate_and_touch_data" label="@lang('Validate and touch data')"></field-boolean>
+                        <i class="uk-icon uk-icon-info" title="@lang('Before performing any checks, the submitted data will be cleaned by the validator (1: trim, 2: strip_tags, 3: htmlspecialchars)')" data-uk-tooltip></i>
+                    </div>
+
                 </div>
             </div>
 
@@ -84,9 +90,10 @@
 
                 <ul class="uk-tab uk-margin-large-bottom">
                     <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="fields">{ App.i18n.get('Fields') }</a></li>
+                    <li class="{ tab=='attributes' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="attributes">{ App.i18n.get('Attributes') }</a></li>
                     <li class="{ tab=='validate' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="validate">{ App.i18n.get('Validate') }</a></li>
                     <li class="{ tab=='responses' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="responses">{ App.i18n.get('Responses') }</a></li>
-                    <li class="{ tab=='mailer' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="mailer">{ App.i18n.get('Mailer Settings') }</a></li>
+                    <li class="{ tab=='mailer' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="mailer">{ App.i18n.get('Experimental Mailer Settings') }</a></li>
                 </ul>
                 
                 <div class="uk-form-row" show="{tab=='fields'}">
@@ -97,55 +104,77 @@
                 
                 <div class="uk-form-row" show="{tab=='validate'}">
 
-                    <div class="uk-grid">
-                      <div class="uk-flex-item-2 uk-flex">
-                          <field-boolean bind="form.validate" label="@lang('Validate form data')"></field-boolean>
-                      </div>
+                    <div class="uk-grid uk-grid-small uk-panel uk-margin">
 
-                      <div class="uk-flex-item-2 uk-flex">
+                        <div class="">
+                            <field-boolean bind="form.validate" label="@lang('Validate form data')"></field-boolean>
+                        </div>
 
-                          <field-boolean bind="form.allow_extra_fields" label="@lang('Allow extra fields')"></field-boolean>
-                          
-                      </div>
+                        <div class="">
+                            <field-boolean bind="form.allow_extra_fields" label="@lang('Allow extra fields')"></field-boolean>
+                            <i class="uk-icon uk-icon-warning" title="@lang('If enabled, all posted data with unknown field names will come through.')" data-uk-tooltip></i>
+                        </div>
+
                     </div>
 
-                    
-                    <div class="uk-margin" if="{form.validate}">
-                        
-                        <div class="uk-margin uk-panel uk-panel-box uk-panel-card" data-idx="{idx}" each="{ field,idx in form.fields }">
-                            
-                            <div class="uk-grid uk-grid-small">
+                    <div class="uk-margin uk-grid uk-grid-small uk-grid-gutter">
 
-                                <div class="uk-flex-item-1 uk-flex">
-                                    <p class="uk-text-bold">{ field.name }</p>
+                        <div class="uk-width-medium-1-2" data-idx="{idx}" each="{ field,idx in form.fields }">
+
+                            <div class="uk-panel uk-panel-box uk-panel-card">
+
+                                <div class="uk-grid uk-grid-small">
+
+                                    <div class="uk-flex-item-1 uk-flex">
+                                        <p class="uk-text-bold">{ field.name }</p>
+                                    </div>
+
+                                    <div class="uk-flex-item-2 uk-flex">
+                                        <field-boolean bind="form.fields[{idx}].required" label="@lang('Required')"></field-boolean>
+                                    </div>
+
+                                    <div class="uk-flex-item-2 uk-flex">
+                                        <field-boolean bind="form.fields[{idx}].validate" label="@lang('Validate')"></field-boolean>
+                                    </div>
+
+                                    <div class="uk-margin uk-width-1-1" if="{form.fields[idx].validate}">
+                                        <field-object bind="form.fields[{idx}].options.validate" label="@lang('Options')" height="210px"></field-object>
+                                    </div>
+
                                 </div>
 
-                                <div class="uk-flex-item-2 uk-flex">
-
-                                    <field-boolean bind="form.fields[{idx}].required" label="@lang('Required')"></field-boolean>
-                                    
-                                </div>
-
-                                <div class="uk-flex-item-2 uk-flex">
-
-                                    <field-boolean bind="form.fields[{idx}].validate" label="@lang('Validate')"></field-boolean>
-                                    
-                                </div>
-
-                                <div class="uk-margin uk-width-1-1" if="{form.fields[idx].validate}">
-                                    
-                                    <field-object bind="form.fields[{idx}].options.validate" label="@lang('Options')" height="210px"></field-object>
-                                    
-                                </div>
-                            
                             </div>
 
                         </div>
-                        
+
                     </div>
 
                 </div>
-                
+
+                <div class="uk-form-row" show="{tab=='attributes'}">
+
+                    <div class="uk-margin uk-grid uk-grid-small uk-grid-gutter">
+
+                        <div class="uk-width-medium-1-2" data-idx="{idx}" each="{ field,idx in form.fields }">
+
+                            <div class="uk-panel uk-panel-box uk-panel-card">
+
+                                <label class="uk-text-bold">{ field.name }</label>
+
+                                <div class="uk-margin uk-width-1-1">
+                                    
+                                    <field-object bind="form.fields[{idx}].options.attr" label="@lang('Options')" height="210px"></field-object>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
                 <div class="uk-form-row" show="{tab=='responses'}">
 
                     <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
