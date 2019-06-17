@@ -5,7 +5,7 @@
  * @see       https://github.com/raffaelj/cockpit_FormValidation/
  * @see       https://github.com/agentejo/cockpit/
  * 
- * @version   0.2.6
+ * @version   0.2.7
  * @author    Raffael Jesche
  * @license   MIT
  * @note      work in progress
@@ -24,6 +24,9 @@ if (!isset($app['modules'][strtolower($name)])) {
 
     return;
 }
+
+
+
 
 // init + load i18n
 $locale = $app->module('cockpit')->getUser('i18n', $app('i18n')->locale);
@@ -65,14 +68,22 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
 
     // mail subject
     $formname = isset($frm['label']) && trim($frm['label']) ? $frm['label'] : $form;
-    
-    $options['subject'] = isset($frm['email_subject']) && !empty($frm['email_subject']) ? $this->module('formvalidation')->map($frm['email_subject'], $data) : "New form data for: {$formname}";
-    
+
+    if (isset($frm['email_subject']) && !empty($frm['email_subject'])) {
+        $options['subject'] = $this->module('formvalidation')->map($frm['email_subject'], $data);
+    } else {
+        $options['subject'] = "New form data for: {$formname}";
+    }
+
     // add reply_to
-    if (isset($frm['reply_to']) && !empty($frm['reply_to']) && isset($data[$frm['reply_to']]) && filter_var(idn_to_ascii(trim($data[$frm['reply_to']])), FILTER_VALIDATE_EMAIL) ) {
-        
+    if (isset($frm['reply_to'])
+        && !empty($frm['reply_to'])
+        && isset($data[$frm['reply_to']])
+        && filter_var(idn_to_ascii(trim($data[$frm['reply_to']])), FILTER_VALIDATE_EMAIL)
+        ) {
+
         $options['reply_to'] = trim($data[$frm['reply_to']]);
-        
+
     }
 
     // custom mailer settings
@@ -85,23 +96,22 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
         });
 
     }
-    
-    
+
     // add altMessage
     // $options['altMessage'] = "...";
-    
+
     // to do...
-    
+
 });
 
 $app->module('formvalidation')->extend([
-    
+
     'map' => function($str = null, $datamap = []) {
-        
+
         if (!is_string($str)) return;
-        
+
         $pattern = '{{%s}}';
-        
+
         $datamap['app.name'] = $this->app['app.name'];
         $datamap['site_url'] = $this->app['site_url'];
 
@@ -109,25 +119,25 @@ $app->module('formvalidation')->extend([
         foreach($datamap as $var => $value){
             $map[sprintf($pattern, $var)] = $value;
         }
-        
+
         $out = strtr($str, $map);
-        
+
         return $out;
-        
+
     },
-    
+
     'nameToLabel' => function($data = [], $frm = []) {
-        
+
         if (!isset($frm['fields']))
             return $data;
-        
+
         $labels = array_column($frm['fields'], 'label', 'name');
-    
+
         $out = [];
 
         foreach($data as $key => $val){
-          
-            if( array_key_exists($key, $labels) ){
+
+            if( array_key_exists($key, $labels) && !empty($labels[$key]) ){
 
                 $label = htmlspecialchars($labels[$key]);
 
@@ -138,22 +148,16 @@ $app->module('formvalidation')->extend([
             }
 
             $out[$label] = $val;
-          
+
         }
-        
+
         return $out;
-        
+
     },
-    /*
-    'createMailTemplate' => function($name) {
-        
-        // to do...
-        
-    }
-    */
+
 ]);
 
 // ADMIN
 if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
-    include('admin.php');
+    include_once('admin.php');
 }

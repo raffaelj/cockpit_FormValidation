@@ -80,7 +80,11 @@
 
                     <div class="uk-margin">
                         <field-boolean bind="form.validate_and_touch_data" label="@lang('Validate and touch data')"></field-boolean>
-                        <i class="uk-icon uk-icon-info" title="@lang('Before performing any checks, the submitted data will be cleaned by the validator (1: trim, 2: strip_tags, 3: htmlspecialchars)')" data-uk-tooltip></i>
+                        <i class="uk-icon uk-icon-info" title="@lang('Before performing any checks, the submitted data will be cleaned by the validator (1.: trim, 2.: strip_tags, 3.: htmlspecialchars)')" data-uk-tooltip></i>
+                    </div>
+
+                    <div class="uk-margin">
+                        <field-boolean bind="form.experimental_settings" label="@lang('Display experimental settings')"></field-boolean>
                     </div>
 
                 </div>
@@ -93,7 +97,7 @@
                     <li class="{ tab=='attributes' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="attributes">{ App.i18n.get('Attributes') }</a></li>
                     <li class="{ tab=='validate' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="validate">{ App.i18n.get('Validate') }</a></li>
                     <li class="{ tab=='responses' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="responses">{ App.i18n.get('Responses') }</a></li>
-                    <li class="{ tab=='mailer' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="mailer">{ App.i18n.get('Experimental Mailer Settings') }</a></li>
+                    <li class="{ tab=='mailer' && 'uk-active'}" if="{ form.experimental_settings }"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="mailer">{ App.i18n.get('Experimental Mailer Settings') }</a></li>
                 </ul>
                 
                 <div class="uk-form-row" show="{tab=='fields'}">
@@ -153,6 +157,10 @@
 
                 <div class="uk-form-row" show="{tab=='attributes'}">
 
+                    <div class="uk-margin-bottom">
+                        <label>@lang('Define some attributes for your frontend.')</label>
+                    </div>
+
                     <div class="uk-margin uk-grid uk-grid-small uk-grid-gutter">
 
                         <div class="uk-width-medium-1-2" data-idx="{idx}" each="{ field,idx in form.fields }">
@@ -178,32 +186,36 @@
                 <div class="uk-form-row" show="{tab=='responses'}">
 
                     <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
-                        
+
                         <label class="uk-text-small">@lang('Email subject')</label>
+
                         <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_subject">
-                        
+
                         <div class="uk-alert">
-                            @lang('Use double brackets to use app.name or form field contents as template, like: "[\{\{app.name\}\}] New message from \{\{name\}\}"')
+                            @lang('Use double brackets to use app.name or form field contents as template.') @lang('Example'): <code>[\{\{app.name\}\}] \{\{subject\}\}"</code>
                         </div>
 
                     </div>
 
                     <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
-                        
+
                         <label class="uk-text-small">@lang('Reply To')</label>
-                        <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.reply_to">
-                        
-                        <div class="uk-alert">
-                            @lang('Enter field name, like: "mail"')
-                        </div>
+
+                        <select bind="form.reply_to">
+                            <option value=""></option>
+                            <option value="{ field.name }" each="{ field, idx in form.fields }">{ field.name }</option>
+                        </select>
 
                     </div>
 
                     <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
                         
                         <p>
-                            @lang('Create a custom mail template in config/forms/emails/formname.php to use the settings below.')
-                            <a href="https://github.com/raffaelj/cockpit_FormValidation/blob/master/README.md#form-mail-template-example" target="bubble">@lang('Example')</a>
+                            @lang('Create a custom mail template, to use the settings below.') @lang('Save it as') <code>config/forms/emails/formname.php</code>
+                            (<a href="https://github.com/raffaelj/cockpit_FormValidation/blob/master/templates/emails/contactform.php" target="bubble" title="@lang('external link')" data-uk-tooltip>@lang('Example')</a>)
+
+                            <a class="" href="#" onclick="{copyTemplate}"><i class="uk-icon-copy" title="@lang('Click to copy default template into config directory.')" data-uk-tooltip></i></a>
+
                         </p>
                         
                         <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
@@ -212,7 +224,7 @@
                             <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_text_before">
                             
                             <div class="uk-alert">
-                                @lang('Use double brackets to use app.name, site_url or form field contents as template, like: "New message on \{\{site_url\}\}"')
+                                @lang('Use double brackets to use app.name, site_url or form field contents as template.') @lang('Example'): <code>New message on \{\{site_url\}\} from \{\{name\}\}</code>
                             </div>
 
                         </div>
@@ -223,7 +235,7 @@
                             <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_text_after">
                             
                             <div class="uk-alert">
-                                @lang('Use double brackets to use app.name, site_url or form field contents as template, like: "New message on \{\{site_url\}\}"')
+                                @lang('Use double brackets to use app.name, site_url or form field contents as template.') @lang('Example'): <code>Have a nice day and don't forget to send \{\{item\}\} to \{\{name\}\}.</code>
                             </div>
 
                         </div>
@@ -236,7 +248,7 @@
                     @if(isset($app['config']['mailer']))
 
                         @hasaccess?('cockpit', 'sysinfo')
-                            <pre>{{ print_r($app['config']['mailer']) }}</pre>
+                            <pre>{{ print_r($app['config']['mailer'], true) }}</pre>
                         @else
                             <p>@lang('Global mailer settings are set').</p>
                         @endif
@@ -343,11 +355,25 @@
                 }
             });
         }
-        
+
         this.tab = 'fields';
 
         toggleTab(e) {
             this.tab = e.target.getAttribute('data-tab');
+        }
+
+        copyTemplate() {
+
+            App.request('/formvalidation/copyTemplate/' + this.form.name).then(function(data) {
+
+                if (data) {
+                    App.ui.notify("Copied mail template to config dir", "success");
+                } else {
+                    App.ui.notify("Copying failed.", "danger");
+                }
+
+            });
+
         }
 
     </script>

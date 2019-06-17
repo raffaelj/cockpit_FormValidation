@@ -21,4 +21,18 @@ class CustomAdmin extends \Cockpit\AuthController {
         return $this->render('formvalidation:views/form.php', compact('form'));
     }
 
+    // added new route to copy the default email template file
+    public function copyTemplate($name = '') {
+
+        if (empty($name)) return false;
+
+        $this('fs')->mkdir(COCKPIT_CONFIG_DIR . '/forms/emails');
+
+        $source      = $this->app->path('formvalidation:templates/emails/contactform.php');
+        $destination = COCKPIT_CONFIG_DIR . '/forms/emails/' . $name . '.php';
+
+        return $this('fs')->copy($source, $destination, false);
+
+    }
+
 }

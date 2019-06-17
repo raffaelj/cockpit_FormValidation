@@ -92,17 +92,16 @@ If `"response": "404"`, sender gets a `404 Path not found` instead of a json res
 
 ## defaults:
 
-  * if form validation is active
-    * key names must be alphanumeric (a-zA-Z0-9) or '-' or '_'
-    * check, if required fields are present
-    * sending data with unknown field names is not allowed
-  * if field validation is active
-    * no defaults, only specified validations
+* if form validation is active
+  * key names must be alphanumeric (a-zA-Z0-9) or '-' or '_'
+  * check, if required fields are present
+  * sending data with unknown field names is not allowed
+* if field validation is active
+  * no defaults, only specified validations
 
 ## Notes
 
 * Validating to `type:{"phone":false}` could lead to false positives. The regex is meant to allow inputs like "0123 45678" or "+49 123-456-78", but "123" returns true, too.
-* honeypot: the field name must match the option `honeypot.fieldname`
 
 ## i18n
 
@@ -160,67 +159,9 @@ types:
 
 ## Form Mail Template Example
 
-Create a custom mail template in `config/forms/emails/formname.php` to use the settings "email_text_before" and "email_text_after".
+Create a custom mail template in `config/forms/emails/formname.php` to use the settings `email_text_before` and `email_text_after`.
 
-Example:
-
-```php
-<?php
-    
-// map field labels to data names
-$out = cockpit('formvalidation')->nameToLabel($data, $frm);
-
-// templating in email_text_after and email_text_before
-$email_text_before = isset($frm['email_text_before']) && !empty($frm['email_text_before']) ? cockpit('formvalidation')->map($frm['email_text_before'], $data) : false;
-
-$email_text_after = isset($frm['email_text_after']) && !empty($frm['email_text_after']) ? cockpit('formvalidation')->map($frm['email_text_after'], $data) : false;
-
-?>
-<!DOCTYPE HTML>
-<html><head><meta charset="utf-8" /></head><body>
-<?php if ($email_text_before): ?>
-<p>{{ $email_text_before }}</p>
-<?php endif; ?>
-<?php foreach ($out as $field => $val): ?>
-<p><strong>{{ $field }}:</strong><br />
-{{ $val }}</p>
-<?php endforeach;?>
-<?php if ($email_text_after): ?>
-<p>{{ $email_text_after }}</p>
-<?php endif; ?>
-</body></html>
-```
-
-## Changelog
-
-**0.2.5**
-
-* added custom fieldsmanager to prevent choosing unsupported field types
-* fixed route without name - now the form manager is active when creating a new form, too
-* minor cleanup
-
-**0.2.4**
-
-* moved addon files to root
-* minor changes
-
-**2018-11-16**
-
-* improved Admin.php overwrite
-* added version numbers and git tags
-* fixed empty forms index page in upcoming Cockpit v0.8.4 [original changed](https://github.com/agentejo/cockpit/commit/fd3dbe69247f62db033fa7eeae69c5c098e29e44#diff-043b1f3bccf6ef55f3cda2918e79daae)
-
-**2018-11-02**
-
-* added i18n
-* now throws response as an Exception if using Cockpit as a library
-
-**2018-10-22**
-
-* moved addon to subfolder
-* disabled experimental custom #config path
-* added warning if global mailer settings aren't defined
-* added custom mailer settings to define individual mailers per form
+[Example](/templates/emails/contactform.php)
 
 ## Screenshots
 
