@@ -209,7 +209,7 @@
                     </div>
 
                     <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
-                        
+
                         <p>
                             @lang('Create a custom mail template, to use the settings below.') @lang('Save it as') <code>config/forms/emails/formname.php</code>
                             (<a href="https://github.com/raffaelj/cockpit_FormValidation/blob/master/templates/emails/contactform.php" target="bubble" title="@lang('external link')" data-uk-tooltip>@lang('Example')</a>)
@@ -217,12 +217,12 @@
                             <a class="" href="#" onclick="{copyTemplate}"><i class="uk-icon-copy" title="@lang('Click to copy default template into config directory.')" data-uk-tooltip></i></a>
 
                         </p>
-                        
+
                         <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
-                            
+
                             <label class="uk-text-small">@lang('Text before mail')</label>
                             <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_text_before">
-                            
+
                             <div class="uk-alert">
                                 @lang('Use double brackets to use app.name, site_url or form field contents as template.') @lang('Example'): <code>New message on \{\{site_url\}\} from \{\{name\}\}</code>
                             </div>
@@ -230,19 +230,19 @@
                         </div>
 
                         <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
-                            
+
                             <label class="uk-text-small">@lang('Text after mail')</label>
                             <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_text_after">
-                            
+
                             <div class="uk-alert">
                                 @lang('Use double brackets to use app.name, site_url or form field contents as template.') @lang('Example'): <code>Have a nice day and don't forget to send \{\{item\}\} to \{\{name\}\}.</code>
                             </div>
 
                         </div>
                     </div>
-                    
+
                 </div>
-                
+
                 <div class="uk-form-row" show="{tab=='mailer'}">
 
                     @if(isset($app['config']['mailer']))
@@ -274,7 +274,7 @@
                     @hasaccess?('forms', 'manage')
                     <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
 
-                        <p>@lang('Custom mailer settings') (@lang('experimental')) <i class="uk-icon-warning" title="@lang('The mailer settings are stored in the form definitions. Be aware of this fact, if others could access this information.')" data-uk-tooltip></i></p>
+                        <label>@lang('Custom mailer settings') (@lang('experimental')) <span class="uk-text-muted">JSON</span> <i class="uk-icon-warning" title="@lang('The mailer settings are stored in the form definitions. Be aware of this fact, if others could access this information.')" data-uk-tooltip></i></label>
 
                         <field-object bind="form.mailer"></field-object>
 
@@ -308,6 +308,10 @@
         this.mixin(RiotBindMixin);
 
         this.form = {{ json_encode($form) }};
+
+        // link collection item, e. g. privacy notice
+        this.collections = {{ json_encode(cockpit('collections')->getCollectionsInGroup()) }};
+        this.collection = '';
 
         this.on('mount', function(){
 

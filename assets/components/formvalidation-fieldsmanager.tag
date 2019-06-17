@@ -86,7 +86,7 @@
 
             <div class="uk-tab uk-flex uk-flex-center uk-margin" data-uk-tab>
                 <li class="uk-active"><a>{ App.i18n.get('General') }</a></li>
-                <li><a>{ App.i18n.get('Access') }</a></li>
+                <li><a>{ App.i18n.get('Other') }</a></li>
             </div>
 
             <div class="uk-margin-top ref-tab">
@@ -132,9 +132,40 @@
                     </div>
 
                 </div>
+
                 <div class="uk-hidden">
-                    <field-access-list class="uk-margin-large uk-margin-large-top uk-display-block" bind="field.acl"></field-access-list>
+
+                    <div class="uk-form-row">
+                        <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{ App.i18n.get('Link Collection Item') }</label>
+
+                        <select bind="collection">
+                            <option value=""></option>
+                            <option value="{ col.name }" each="{ col in collections }">{ col.label || col.name }</option>
+                        </select>
+                        
+                        <div class="uk-grid uk-grid-small uk-grid-match uk-margin uk-width-1-1">
+
+                            <div class="uk-width-1-3">
+                                <label>{ App.i18n.get('Text before link') }</label>
+                                <field-textarea rows="2" bind="field.options.link.text_before" if="{field.options.link}"></field-textarea>
+                            </div>
+
+                            <div class="uk-width-1-3">
+                                <label>{ App.i18n.get('Collectionlink') }</label>
+                                <field-collectionlink link="{ collection }" class="" bind="field.options.link" if="{collection}"></field-collectionlink>
+                            </div>
+
+                            <div class="uk-width-1-3">
+                                <label>{ App.i18n.get('Text after link') }</label>
+                                <field-textarea rows="2" bind="field.options.link.text_after" if="{field.options.link}"></field-textarea>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
+
             </div>
 
             <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get('Close') }</button></div>
@@ -184,6 +215,10 @@
         this.field = null;
         this.reorder = false;
 
+        // link collection item, e. g. privacy notice
+        this.collections = this.parent.collections;
+        this.collection = '';
+
         this.fieldtypes = [
             {name:'Text', value:'text'},
             {name:'Textarea', value:'textarea'},
@@ -193,7 +228,7 @@
             {name:'Honeypot', value:'honeypot'},
             // {name:'Multipleselect', value:'multipleselect'},
         ];
-        
+
         this.honeypot_options = {
           "attr": {
             "name": "confirm",
@@ -322,6 +357,10 @@
         fieldSettings(e) {
 
             this.field = e.item.field;
+            
+            if (this.field.options && this.field.options.link && this.field.options.link.link) {
+                this.collection = this.field.options.link.link;
+            }
 
             UIkit.modal(this.refs.modalField, {bgclose:false}).show()
         }

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.8
+
+* added option to link collection item (intended use: link a page with privacy notice)
+* minor changes
+
 ## 0.2.7
 
 * added option to copy email template into `/config/forms/email/formname.php`

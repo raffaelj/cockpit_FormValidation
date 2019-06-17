@@ -5,7 +5,7 @@
  * @see       https://github.com/raffaelj/cockpit_FormValidation/
  * @see       https://github.com/agentejo/cockpit/
  * 
- * @version   0.2.7
+ * @version   0.2.8
  * @author    Raffael Jesche
  * @license   MIT
  * @note      work in progress
