@@ -180,7 +180,7 @@ class Validator extends \Lime\Helper {
 
                     $match = $this->matchType($name, $match_type);
 
-                    if($not_inverse && !$match || !$not_inverse && $match){
+                    if ($not_inverse && !$match || !$not_inverse && $match){
                         $must = $match ? "must be" : "must not be";
                         $must = !$not_inverse ? "must not be" : "must be";
                         $this->error[$name][] = $this('i18n')->get("$must $match_type");
@@ -225,26 +225,25 @@ class Validator extends \Lime\Helper {
 
     }
 
-    function matchType($field, $match_type) {
+    function matchType($field, $type) {
 
-        $ret = false;
-        switch($match_type){
+        switch ($type) {
 
             case 'mail':
-                $ret = filter_var(idn_to_ascii($this->data[$field]), FILTER_VALIDATE_EMAIL);
-                break;
+                return filter_var(idn_to_ascii($this->data[$field]), FILTER_VALIDATE_EMAIL);
 
             case 'phone':
-                $ret = !preg_match('~[^-\s\d./()+]~', $this->data[$field]);
-                break;
+                return !preg_match('~[^-\s\d./()+]~', $this->data[$field]);
 
             case 'url':
-                $ret = filter_var(idn_to_ascii($this->data[$field]), FILTER_VALIDATE_URL);
-                break;
+                return filter_var(idn_to_ascii($this->data[$field]), FILTER_VALIDATE_URL);
+
+            case 'number':
+                return is_numeric($this->data[$field]);
 
         }
 
-        return $ret;
+        return false;
 
     }
 

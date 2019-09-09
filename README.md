@@ -140,7 +140,7 @@ matches:
   * [x] honeypot (humans wouldn't fill this field)
   * [x] type (mail, phone, url)
   * [x] !type (inverse type)
-  * [ ] equals (= string) (for simple captchas or something like "Are you really sure? Type 'Yes'")
+  * [x] equals (= string) (for simple captchas or something like "Are you really sure? Type 'Yes'")
   * [ ] contains
     * [ ] code
     * [ ] url(s)
@@ -151,7 +151,7 @@ types:
   * [x] mail
   * [x] phone
   * [x] url
-  * [ ] number
+  * [x] number
   * [ ] bool
   * [ ] ascii
   * [ ] date --> must be i18n specific
