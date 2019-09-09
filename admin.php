@@ -14,8 +14,8 @@ $app->bind('/forms/form/:name', function($params){
 
 });
 
-$app->bind('/formvalidation/copyTemplate/:name', function($params){
+$app->bind('/formvalidation/copyMailTemplate/:name', function($params){
 
-    return $this->invoke('FormValidation\\Controller\\CustomAdmin', 'copyTemplate', [$params['name'] ?? '']);
+    return $this->invoke('FormValidation\\Controller\\CustomAdmin', 'copyMailTemplate', [$params['name'] ?? '']);
 
 });
