@@ -1,54 +1,53 @@
 <?php
+/*
+  Notes:
 
-namespace Forms\Controller;
+    requires: PECL intl extension (for punycode conversion of urls and mail adresses)
 
-class FormValidation extends \LimeExtra\Controller {
+    Work in progress! Feel free to contribute with code, bug reports or feature requests.
 
-    /*
-      Notes:
+*/
 
-        requires: PECL intl extension (for punycode conversion of urls and mail adresses)
+namespace FormValidation\Helper;
 
-        Work in progress! Feel free to contribute with code, bug reports or feature requests.
+class Validator extends \Lime\Helper {
 
-    */
-
-    protected $error = [];
-    protected $fields = [];
     public $data = [];
-    protected $exit = false;
-    protected $allow_extra_fields = false;
-    protected $validate_and_touch_data = false;
-    public $i18n;
 
-    function __construct($app, $data = [], $frm = []){
+    protected $error  = [];
+    protected $fields = [];
+    protected $exit   = false;
+    protected $allow_extra_fields = false;
+
+    function init($data = [], $frm = []) {
 
         $this->data = $data;
 
-        if(isset($frm['fields']))
+        if (isset($frm['fields'])) {
             $this->fields = $frm['fields'];
+        }
 
-        if(isset($frm['allow_extra_fields']))
+        if (isset($frm['allow_extra_fields'])) {
             $this->allow_extra_fields = $frm['allow_extra_fields'];
+        }
 
-        if(isset($frm['validate_and_touch_data']))
-            $this->validate_and_touch_data = $frm['validate_and_touch_data'];
-
-        parent::__construct($app);
+        // touch original data if you don't want to do this step in your frontend
+        if (isset($frm['validate_and_touch_data']) && $frm['validate_and_touch_data']) {
+            foreach ($this->data as $key => &$val) {
+                $this->data[$key] = htmlspecialchars(strip_tags(trim($val)));
+            }
+        }
 
         $this->validate();
+
+        return $this;
 
     }
 
     function validate() {
 
-        // touch original data if you don't want to do this step in your frontend
-        if($this->validate_and_touch_data)
-            foreach($this->data as $key => &$val)
-                $this->data[$key] = htmlspecialchars(strip_tags(trim($val)));
-
         // check, if key names are alphanumeric
-        if(!$this->alnumKeys($this->data)) {
+        if (!$this->alnumKeys($this->data)) {
             // error message will be applied in alnumKeys()
             return;
         }
@@ -214,6 +213,7 @@ class FormValidation extends \LimeExtra\Controller {
         $valid = ["-", "_"];
 
         foreach(array_keys($arr) as $key){
+
             if( !ctype_alnum( str_replace($valid, "", $key) ) ){
                 $this->error[$key][] = "allowed characters in key names: 'a-zA-Z0-9', '-' and '_'";
                 $ret = false;
@@ -250,11 +250,9 @@ class FormValidation extends \LimeExtra\Controller {
 
     function response() {
 
-        if($this->exit)
-            return false;
+        if ($this->exit) return false;
 
-        if(!empty($this->error))
-            return $this->error;
+        if (!empty($this->error)) return $this->error;
 
         return true;
 

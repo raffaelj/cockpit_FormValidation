@@ -26,7 +26,7 @@ if (!isset($app['modules'][strtolower($name)])) {
 }
 
 
-
+$this->helpers['validator'] = 'FormValidation\\Helper\\Validator';
 
 // init + load i18n
 $locale = $app->module('cockpit')->getUser('i18n', $app('i18n')->locale);
@@ -40,10 +40,7 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
 
     if (isset($frm['validate']) && $frm['validate']) {
 
-        // load validation class
-        require_once(__DIR__ . '/Controller/FormValidation.php');
-
-        $validated = new Forms\Controller\FormValidation($this, $data, $frm);
+        $validated = $this('validator')->init($data, $frm);
 
         // send 404 to sender
         if (false == $validated->response()) {
