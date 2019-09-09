@@ -17,12 +17,24 @@ class CustomAdmin extends \Cockpit\AuthController {
                 return false;
             }
         }
+        
+        // get field templates
+        $templates = [];
+
+        foreach ($this->app->helper('fs')->ls('*.php', 'formvalidation:fields-templates') as $file) {
+            $templates[] = include($file->getRealPath());
+        }
+
+        foreach ($this->app->module('forms')->forms() as $col) {
+            $templates[] = $col;
+        }
+
         // only changed the template dir from 'form' to 'formvalidation'
-        return $this->render('formvalidation:views/form.php', compact('form'));
+        return $this->render('formvalidation:views/form.php', compact('form', 'templates'));
     }
 
     // added new route to copy the default email template file
-    public function copyTemplate($name = '') {
+    public function copyMailTemplate($name = '') {
 
         if (empty($name)) return false;
 

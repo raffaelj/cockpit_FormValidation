@@ -212,7 +212,7 @@
                             @lang('Create a custom mail template, to use the settings below.') @lang('Save it as') <code>config/forms/emails/formname.php</code>
                             (<a href="https://github.com/raffaelj/cockpit_FormValidation/blob/master/templates/emails/contactform.php" target="bubble" title="@lang('external link')" data-uk-tooltip>@lang('Example')</a>)
 
-                            <a class="" href="#" onclick="{copyTemplate}"><i class="uk-icon-copy" title="@lang('Click to copy default template into config directory.')" data-uk-tooltip></i></a>
+                            <a class="" href="#" onclick="{copyMailTemplate}"><i class="uk-icon-copy" title="@lang('Click to copy default template into config directory.')" data-uk-tooltip></i></a>
 
                         </p>
 
@@ -305,11 +305,12 @@
 
         this.mixin(RiotBindMixin);
 
-        this.form = {{ json_encode($form) }};
+        this.form      = {{ json_encode($form) }};
+        this.templates = {{ json_encode($templates) }};
 
         // link collection item, e. g. privacy notice
         this.collections = {{ json_encode(cockpit('collections')->getCollectionsInGroup()) }};
-        this.collection = '';
+        this.collection  = '';
 
         this.on('mount', function(){
 
@@ -364,14 +365,40 @@
             this.tab = e.target.getAttribute('data-tab');
         }
 
-        copyTemplate() {
+        copyMailTemplate() {
 
-            App.request('/formvalidation/copyTemplate/' + this.form.name).then(function(data) {
+            App.request('/formvalidation/copyMailTemplate/' + this.form.name).then(function(data) {
 
                 if (data) {
                     App.ui.notify("Copied mail template to config dir", "success");
                 } else {
                     App.ui.notify("Copying failed.", "danger");
+                }
+
+            });
+
+        }
+
+        fromTemplate(template) {
+
+            var options = [
+                'save_entry',
+                'in_menu',
+                'email_forward',
+                'icon',
+                'validate',
+                'allow_extra_fields',
+                'email_subject',
+                'reply_to',
+                'email_text_before',
+                'email_text_after',
+            ];
+
+            options.forEach(function(option) {
+
+                if (typeof template[option] !== 'undefined') {
+                    $this.form[option] = template[option];
+                    $this.update();
                 }
 
             });

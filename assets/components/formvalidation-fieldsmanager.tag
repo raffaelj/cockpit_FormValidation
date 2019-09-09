@@ -375,6 +375,10 @@
                 this.fields = template.fields;
                 $this.$setValue(this.fields);
             }
+
+            // pass template options through to parent (form.php)
+            this.parent.fromTemplate(template);
+
         }
 
     </script>
