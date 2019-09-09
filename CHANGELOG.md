@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.9
+
+* added form template functionality
+* added filters: equal, number
+* replaced `in_menu` toggle with event `forms.settings.aside`
+* minor fixes and ui changes
+
 ## 0.2.8
 
 * added option to link collection item (intended use: link a page with privacy notice)
