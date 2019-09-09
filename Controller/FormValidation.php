@@ -92,7 +92,12 @@ class FormValidation extends \LimeExtra\Controller {
 
                 $type[$field['name']] = $field['options']['validate']['type'];
             }
-                
+
+            if (isset($field['options']['validate']['equals'])
+                && array_key_exists($field['name'], $this->data)) {
+
+                $equals[$field['name']] = $field['options']['validate']['equals'];
+            }
 
         }
 
@@ -166,9 +171,10 @@ class FormValidation extends \LimeExtra\Controller {
         // 3. contains
             // to do ...
 
-        // 4. type
+        
         foreach($validate as $name) {
 
+            // 4. type
             if (isset($type[$name])) {
 
                 foreach($type[$name] as $match_type => $not_inverse){
@@ -180,6 +186,17 @@ class FormValidation extends \LimeExtra\Controller {
                         $must = !$not_inverse ? "must not be" : "must be";
                         $this->error[$name][] = $this('i18n')->get("$must $match_type");
                     }
+
+                }
+
+            }
+
+            // 5. equals
+            if (isset($equals[$name])) {
+
+                if ($this->data[$name] != $equals[$name]) {
+
+                    $this->error[$name][] = $this('i18n')->get("doesn't match");
 
                 }
 
