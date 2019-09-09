@@ -212,7 +212,7 @@
                             @lang('Create a custom mail template, to use the settings below.') @lang('Save it as') <code>config/forms/emails/formname.php</code>
                             (<a href="https://github.com/raffaelj/cockpit_FormValidation/blob/master/templates/emails/contactform.php" target="bubble" title="@lang('external link')" data-uk-tooltip>@lang('Example')</a>)
 
-                            <a class="" href="#" onclick="{copyMailTemplate}"><i class="uk-icon-copy" title="@lang('Click to copy default template into config directory.')" data-uk-tooltip></i></a>
+                            <a class="uk-button" href="#" onclick="{copyMailTemplate}"><i class="uk-icon-copy uk-margin-small-right"></i>@lang('Copy default mail template to config directory')</a>
 
                         </p>
 
@@ -369,8 +369,10 @@
 
             App.request('/formvalidation/copyMailTemplate/' + this.form.name).then(function(data) {
 
-                if (data) {
+                if (data && !data.error) {
                     App.ui.notify("Copied mail template to config dir", "success");
+                } else if (data && data.error) {
+                    App.ui.notify(data.error, "danger");
                 } else {
                     App.ui.notify("Copying failed.", "danger");
                 }

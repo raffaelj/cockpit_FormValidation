@@ -21,7 +21,7 @@ class CustomAdmin extends \Cockpit\AuthController {
         // get field templates
         $templates = [];
 
-        foreach ($this->app->helper('fs')->ls('*.php', 'formvalidation:fields-templates') as $file) {
+        foreach ($this->app->helper('fs')->ls('*.php', 'formvalidation:templates/forms') as $file) {
             $templates[] = include($file->getRealPath());
         }
 
@@ -29,21 +29,23 @@ class CustomAdmin extends \Cockpit\AuthController {
             $templates[] = $col;
         }
 
-        // only changed the template dir from 'form' to 'formvalidation'
+        // changed the template dir from 'form' to 'formvalidation'
         return $this->render('formvalidation:views/form.php', compact('form', 'templates'));
     }
 
     // added new route to copy the default email template file
     public function copyMailTemplate($name = '') {
 
-        if (empty($name)) return false;
+        if (empty($name)) return ['error' => 'The form needs a name'];
 
         $this('fs')->mkdir(COCKPIT_CONFIG_DIR . '/forms/emails');
 
         $source      = $this->app->path('formvalidation:templates/emails/contactform.php');
         $destination = COCKPIT_CONFIG_DIR . '/forms/emails/' . $name . '.php';
 
-        return $this('fs')->copy($source, $destination, false);
+        $copied = $this('fs')->copy($source, $destination, false);
+
+        return $copied ? ['success' => 1] : ['error' => 'Copying failed.'];
 
     }
 
