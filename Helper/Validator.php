@@ -98,6 +98,12 @@ class Validator extends \Lime\Helper {
                 $equals[$field['name']] = $field['options']['validate']['equals'];
             }
 
+            if (isset($field['options']['validate']['equalsi'])
+                && array_key_exists($field['name'], $this->data)) {
+
+                $equalsi[$field['name']] = $field['options']['validate']['equalsi'];
+            }
+
         }
 
         // 1. honeypot
@@ -194,6 +200,15 @@ class Validator extends \Lime\Helper {
             if (isset($equals[$name])) {
 
                 if ($this->data[$name] != $equals[$name]) {
+
+                    $this->error[$name][] = $this('i18n')->get("doesn't match");
+
+                }
+
+            }
+            if (isset($equalsi[$name])) {
+
+                if (strtolower($this->data[$name]) != strtolower($equalsi[$name])) {
 
                     $this->error[$name][] = $this('i18n')->get("doesn't match");
 
