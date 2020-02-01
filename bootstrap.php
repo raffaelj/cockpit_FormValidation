@@ -61,7 +61,11 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
     if (isset($frm['reply_to'])
         && !empty($frm['reply_to'])
         && isset($data[$frm['reply_to']])
-        && filter_var(idn_to_ascii(trim($data[$frm['reply_to']])), FILTER_VALIDATE_EMAIL)
+        && \filter_var(
+            \idn_to_ascii(
+                \trim($data[$frm['reply_to']])
+                , IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46
+            ), FILTER_VALIDATE_EMAIL)
         ) {
 
         $options['reply_to'] = trim($data[$frm['reply_to']]);

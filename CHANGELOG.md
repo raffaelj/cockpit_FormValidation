@@ -1,5 +1,10 @@
 # Changelog
 
+## upcoming
+
+* added equalsi filter (case insensitive equals filter)
+* fixed idn_to_ascii deprecation notice in PHP >7.2
+
 ## 0.2.9
 
 * added form template functionality

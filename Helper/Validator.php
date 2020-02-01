@@ -245,13 +245,13 @@ class Validator extends \Lime\Helper {
         switch ($type) {
 
             case 'mail':
-                return filter_var(idn_to_ascii($this->data[$field]), FILTER_VALIDATE_EMAIL);
+                return \filter_var(\idn_to_ascii($this->data[$field], IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46), FILTER_VALIDATE_EMAIL);
 
             case 'phone':
                 return !preg_match('~[^-\s\d./()+]~', $this->data[$field]);
 
             case 'url':
-                return filter_var(idn_to_ascii($this->data[$field]), FILTER_VALIDATE_URL);
+                return \filter_var(\idn_to_ascii($this->data[$field], IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46), FILTER_VALIDATE_URL);
 
             case 'number':
                 return is_numeric($this->data[$field]);
