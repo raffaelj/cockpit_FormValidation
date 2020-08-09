@@ -1,0 +1,3 @@
+/lib/vendor 
+*.kate-swp
+composer.lock

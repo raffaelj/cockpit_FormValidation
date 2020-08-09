@@ -1,0 +1,23 @@
+{
+    "name": "raffaelj/cockpit-formvalidation",
+    "type": "cockpit-module",
+    "description": "A form validator and form builder for Cockpit CMS",
+    "keywords": ["cockpit", "forms", "validation"],
+    "homepage": "https://github.com/raffaelj/cockpit_FormValidation",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Raffael Jesche",
+            "homepage": "https://www.rlj.me"
+        }
+    ],
+    "require": {
+        "composer/installers": "^1.9"
+    },
+    "config": {
+        "vendor-dir": "lib/vendor"
+    },
+    "extra": {
+        "installer-name": "FormValidation"
+    }
+}
