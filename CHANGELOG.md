@@ -1,9 +1,11 @@
 # Changelog
 
-## upcoming
+## 0.2.10
 
 * added equalsi filter (case insensitive equals filter)
-* fixed idn_to_ascii deprecation notice in PHP >7.2
+* fixed idn_to_ascii deprecation notice in PHP 7.3
+* fixed missing `__DIR__` in admin include
+* added composer.json
 
 ## 0.2.9
 
