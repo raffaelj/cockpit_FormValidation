@@ -19,7 +19,7 @@ class Validator extends \Lime\Helper {
     protected $exit   = false;
     protected $allow_extra_fields = false;
 
-    function init($data = [], $frm = []) {
+    public function init($data = [], $frm = []) {
 
         $this->data = $data;
 
@@ -42,9 +42,9 @@ class Validator extends \Lime\Helper {
 
         return $this;
 
-    }
+    } // end of init()
 
-    function validate() {
+    public function validate() {
 
         // check, if key names are alphanumeric
         if (!$this->alnumKeys($this->data)) {
@@ -176,7 +176,7 @@ class Validator extends \Lime\Helper {
         // 3. contains
             // to do ...
 
-        
+
         foreach($validate as $name) {
 
             // 4. type
@@ -218,9 +218,9 @@ class Validator extends \Lime\Helper {
 
         }
 
-    }
+    } // end of validate()
 
-    function alnumKeys($arr) {
+    public function alnumKeys($arr) {
 
         // returns false if any key name is not alphanumeric or '-' or '_'
 
@@ -238,31 +238,31 @@ class Validator extends \Lime\Helper {
 
         return $ret;
 
-    }
+    } // end of alnumKeys()
 
-    function matchType($field, $type) {
+    public function matchType($field, $type) {
 
         switch ($type) {
 
             case 'mail':
-                return \filter_var(\idn_to_ascii($this->data[$field], IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46), FILTER_VALIDATE_EMAIL);
+                return $this->isEmail($this->data[$field]);
 
             case 'phone':
                 return !preg_match('~[^-\s\d./()+]~', $this->data[$field]);
 
             case 'url':
-                return \filter_var(\idn_to_ascii($this->data[$field], IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46), FILTER_VALIDATE_URL);
+                return $this->isUrl($this->data[$field]);
 
             case 'number':
-                return is_numeric($this->data[$field]);
+                return \is_numeric($this->data[$field]);
 
         }
 
         return false;
 
-    }
+    } // end of matchType()
 
-    function response() {
+    public function response() {
 
         if ($this->exit) return false;
 
@@ -270,6 +270,26 @@ class Validator extends \Lime\Helper {
 
         return true;
 
-    }
+    } // end of response()
+
+    public function isEmail($str) {
+
+        if (\function_exists('idn_to_ascii')) {
+            return \filter_var(\idn_to_ascii($str, IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46), FILTER_VALIDATE_EMAIL);
+        } else {
+            return \filter_var($str, FILTER_VALIDATE_EMAIL);
+        }
+
+    } // end of isEmail()
+
+    public function isUrl($str) {
+
+        if (\function_exists('idn_to_ascii')) {
+            return \filter_var(\idn_to_ascii($str, IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46), FILTER_VALIDATE_URL);
+        } else {
+            return \filter_var($str, FILTER_VALIDATE_URL);
+        }
+
+    } // end of isUrl()
 
 }
