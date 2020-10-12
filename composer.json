@@ -14,6 +14,9 @@
     "require": {
         "composer/installers": "^1.9"
     },
+    "suggest": {
+        "ext-intl": "For validation of punycode domains"
+    },
     "config": {
         "vendor-dir": "lib/vendor"
     },
