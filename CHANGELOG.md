@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.11
+
+* intl extension is now optional --> doesn't throw errors anymore if `idn_to_ascii` is not available, but still required to validate punycode urls correctly
+
 ## 0.2.10
 
 * added equalsi filter (case insensitive equals filter)
