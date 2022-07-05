@@ -142,7 +142,7 @@
                             <option value=""></option>
                             <option value="{ col.name }" each="{ col in collections }">{ col.label || col.name }</option>
                         </select>
-                        
+
                         <div class="uk-grid uk-grid-small uk-grid-match uk-margin uk-width-1-1">
 
                             <div class="uk-width-1-3">
@@ -357,7 +357,7 @@
         fieldSettings(e) {
 
             this.field = e.item.field;
-            
+
             if (this.field.options && this.field.options.link && this.field.options.link.link) {
                 this.collection = this.field.options.link.link;
             }
