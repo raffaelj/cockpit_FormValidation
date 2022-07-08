@@ -1,5 +1,5 @@
 
-<script type="riot/tag" src="@base('formvalidation:assets/components/formvalidation-fieldsmanager.tag')"></script>
+<script type="riot/tag" src="@base('formvalidation:assets/components/formvalidation-fieldsmanager.tag')?v={{ $app['debug'] ? time() : $app['cockpit/version'] }}"></script>
 
 <div>
     <ul class="uk-breadcrumb">
