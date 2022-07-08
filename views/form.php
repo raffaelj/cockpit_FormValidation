@@ -80,7 +80,6 @@
                     </div>
 
                     <div class="uk-margin">
-                        <field-boolean bind="form.experimental_settings" label="@lang('Display experimental settings')"></field-boolean>
                     </div>
 
                     @trigger('forms.settings.aside')
@@ -95,7 +94,6 @@
                     <li class="{ tab=='attributes' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="attributes">{ App.i18n.get('Attributes') }</a></li>
                     <li class="{ tab=='validate' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="validate">{ App.i18n.get('Validate') }</a></li>
                     <li class="{ tab=='responses' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="responses">{ App.i18n.get('Responses') }</a></li>
-                    <li class="{ tab=='mailer' && 'uk-active'}" if="{ form.experimental_settings }"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="mailer">{ App.i18n.get('Experimental Mailer Settings') }</a></li>
                 </ul>
                 
                 <div class="uk-form-row" show="{tab=='fields'}">
@@ -241,45 +239,6 @@
 
                 </div>
 
-                <div class="uk-form-row" show="{tab=='mailer'}">
-
-                    @if(isset($app['config']['mailer']))
-
-                        @hasaccess?('cockpit', 'sysinfo')
-                            <pre>{{ print_r($app['config']['mailer'], true) }}</pre>
-                        @else
-                            <p>@lang('Global mailer settings are set').</p>
-                        @endif
-
-                    @else
-                        <p>@lang('Global Mailer settings are not defined'). @lang('Add them to') <code>config/config.yaml</code>.
-                        @hasaccess?('cockpit', 'sysinfo')
-                        <a class="uk-button uk-button-small uk-margin-small-left" href="@route('/settings/edit')">@lang('System Settings')</a>
-                        @endif
-                        </p>
-                        <pre><code>mailer:
-    from      : noreply@example.com
-    from_name : John Doe
-    transport : smtp
-    host      : smtphost.example.com
-    user      : johndoe
-    password  : xxpasswordxx
-    port      : 587
-    auth      : true
-    encryption: starttls</code></pre>
-                    @endif
-
-                    @hasaccess?('forms', 'manage')
-                    <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
-
-                        <label>@lang('Custom mailer settings') (@lang('experimental')) <span class="uk-text-muted">JSON</span> <i class="uk-icon-warning" title="@lang('The mailer settings are stored in the form definitions. Be aware of this fact, if others could access this information.')" data-uk-tooltip></i></label>
-
-                        <field-object bind="form.mailer"></field-object>
-
-                    </div>
-                    @endif
-
-                </div>
 
                 <cp-actionbar>
                     <div class="uk-container uk-container-center">

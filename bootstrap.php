@@ -72,17 +72,6 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
 
     }
 
-    // custom mailer settings
-    if (!empty($frm['mailer'])) {
-
-        // overwrite mailer service
-        $this->service('mailer', function() use($frm){
-            $mailer    = new \Mailer($frm['mailer']['transport'] ?? 'mail', $frm['mailer']);
-            return $mailer;
-        });
-
-    }
-
     // add altMessage
     // $options['altMessage'] = "...";
 
