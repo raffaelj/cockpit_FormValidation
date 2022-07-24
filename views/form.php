@@ -222,7 +222,7 @@
 
                 <div class="uk-form-row" show="{tab=='options'}" data-tab="options">
 
-                    <div class="uk-margin uk-grid uk-grid-small uk-grid-gutter">
+                    <div class="uk-margin uk-grid uk-grid-small uk-grid-gutter uk-grid-match">
 
                         <div class="uk-width-large-1-2" data-idx="{idx}" each="{ field,idx in form.fields }">
 
