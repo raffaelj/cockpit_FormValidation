@@ -128,12 +128,12 @@ class Validator extends \Lime\Helper {
                         return;
                     }
                     else {
-                        $this->error[$honeypotName] = $honeypotOptions['response'];
+                        $this->error['honeypot'] = $honeypotOptions['response'];
                     }
 
                 }
                 else {
-                    $this->error[$honeypotName] = $this('i18n')->get('Hello spambot');
+                    $this->error['honeypot'] = $this('i18n')->get('Hello spambot');
                 }
 
                 return;
