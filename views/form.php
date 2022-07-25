@@ -350,6 +350,43 @@
 
                     <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
 
+                        <label class="uk-text-small">@lang('Custom form massages')</label>
+
+                        <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
+
+                            <label class="uk-text-small">@lang('Success massage')</label>
+
+                            <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.formMessages.success">
+
+                        </div>
+
+                        <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
+
+                            <label class="uk-text-small">@lang('Notice massage')</label>
+
+                            <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.formMessages.notice">
+
+                        </div>
+
+                        <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
+
+                            <label class="uk-text-small">@lang('Mailer error massage')</label>
+
+                            <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.formMessages.mailer">
+
+                        </div>
+
+                        <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
+
+                            <label class="uk-text-small">@lang('Generic error massage')</label>
+
+                            <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.formMessages.error_generic">
+
+                        </div>
+                    </div>
+
+                    <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
+
                         <label class="uk-text-small">@lang('Email subject')</label>
 
                         <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_subject">
@@ -505,6 +542,7 @@
         this.templates = {{ json_encode($templates) }};
         this.reorder = false;
         this.tab = 'layout';
+        this.tab = 'options';
         this.field = null;
 
         // link collection item, e. g. privacy notice
