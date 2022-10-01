@@ -17,7 +17,7 @@ class CustomAdmin extends \Cockpit\AuthController {
                 return false;
             }
         }
-        
+
         // get field templates
         $templates = [];
 
