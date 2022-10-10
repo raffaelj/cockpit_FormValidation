@@ -170,7 +170,7 @@
 
                 </div>
 
-                <div class="uk-form-row" show="{tab=='validate'}" data-tab="validate">
+                <div class="uk-form-row" if="{tab=='validate'}" data-tab="validate">
 
                     <div class="uk-grid uk-grid-small uk-panel uk-margin">
 
@@ -219,7 +219,7 @@
 
                 </div>
 
-                <div class="uk-form-row" show="{tab=='attributes'}" data-tab="attributes">
+                <div class="uk-form-row" if="{tab=='attributes'}" data-tab="attributes">
 
                     <div class="uk-margin-bottom">
                         <label>@lang('Define some attributes for your frontend.')</label>
