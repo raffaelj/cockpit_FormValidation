@@ -91,7 +91,6 @@
 
                 <ul class="uk-tab uk-margin-large-bottom">
                     <li class="{ tab=='layout' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="layout">{ App.i18n.get('Layout') }</a></li>
-                    <li class="{ tab=='options' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="options">{ App.i18n.get('Options') }</a></li>
                     <li class="{ tab=='validate' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="validate">{ App.i18n.get('Validations') }</a></li>
                     <li class="{ tab=='attributes' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="attributes">{ App.i18n.get('HTML Attributes') }</a></li>
                     <li class="{ tab=='responses' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="responses">{ App.i18n.get('Responses') }</a></li>
@@ -148,7 +147,7 @@
                                             </li>
 
                                             <li>
-                                                <a onclick="{ switchTabAndScrollToOptions }"><i class="uk-icon-cog uk-text-primary"></i></a>
+                                                <a onclick="{ fieldSettings }"><i class="uk-icon-cog uk-text-primary"></i></a>
                                             </li>
 
                                             <li>
@@ -210,104 +209,6 @@
                                         <field-object bind="form.fields[{idx}].options.validate" label="@lang('Options')" height="210px"></field-object>
                                     </div>
 
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="uk-form-row" show="{tab=='options'}" data-tab="options">
-
-                    <div class="uk-margin uk-grid uk-grid-small uk-grid-gutter uk-grid-match">
-
-                        <div class="uk-width-1-1" data-idx="{idx}" each="{ field,idx in form.fields }">
-
-                            <div class="uk-panel uk-panel-box uk-panel-card">
-                                <div class="uk-panel-box-header uk-flex uk-flex-middle">
-
-                                    <strong class="uk-panel-box-header-title uk-flex-item-1">{ field.name }</strong>
-
-                                    <a class="uk-margin-left uk-text-{ field.lst ? 'success':'muted'}" onclick="{ togglelist }" title="{ App.i18n.get('Show field on list view') }">
-                                        <i class="uk-icon-{ field.lst ? 'eye':'eye-slash'}"></i>
-                                    </a>
-
-                                    <a class="uk-margin-left" onclick="{ fieldSettings }"><i class="uk-icon-cog uk-text-primary"></i></a>
-
-                                    <a class="uk-margin-left uk-text-danger" onclick="{ removefield }">
-                                        <i class="uk-icon-trash"></i>
-                                    </a>
-
-                                </div>
-
-                                <div class="uk-grid uk-grid-gutter">
-
-                                    <div class="uk-width-medium-1-2">
-
-                                        <div class="uk-form-row">
-                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Name') }:</label>
-                                            <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="form.fields[{idx}].name" placeholder="name" pattern="[a-zA-Z0-9_]+" required>
-                                        </div>
-
-                                        <div class="uk-form-row">
-                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Label') }:</label>
-                                            <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="form.fields[{idx}].label" placeholder="{ App.i18n.get('Label') }">
-                                        </div>
-
-                                        <div class="uk-form-row">
-                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Info') }:</label>
-                                            <textarea class="uk-width-1-1 uk-margin-small-top" bind="form.fields[{idx}].info" rows="2"></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="uk-width-medium-1-2">
-
-                                        <div class="uk-grid">
-
-                                            <div class="uk-width-small-1-2">
-                                                <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Type') }:</label>
-                                                <div class="uk-form-select uk-width-1-1 uk-margin-small-top">
-                                                    <a class="uk-text-capitalize">{ field.type }</a>
-                                                    <select class="uk-width-1-1 uk-text-capitalize" bind="form.fields[{idx}].type">
-                                                        <option each="{type,typeidx in fieldtypes}" value="{type.value}">{type.name}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="uk-width-small-1-2">
-
-                                                <div class="uk-form-row">
-                                                    <field-boolean bind="form.fields[{idx}].required" label="{ App.i18n.get('Required') }"></field-boolean>
-                                                </div>
-
-                                                <div class="uk-form-row">
-
-                                                    <field-boolean bind="form.fields[{idx}].validate" label="{ App.i18n.get('Validate') }" class=""></field-boolean>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="uk-form-row" if="{ ['select','multipleselect'].includes(form.fields[idx].type) && riot.tags['field-key-value-pair'] }">
-                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
-                                            <field-key-value-pair class="uk-width-1-1 uk-margin-small-top" type="text" bind="form.fields[{idx}].options.options"></field-key-value-pair>
-                                        </div>
-
-                                        <div class="uk-form-row" if="{ form.fields[idx].type == 'honeypot' }">
-                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
-                                            <a class="uk-button" onclick="{ setHoneyPotOptions }">{App.i18n.get('Set default Honey pot options')}</a>
-                                        </div>
-
-                                        <div class="uk-form-row" if="{ form.fields[idx].type == 'contentblock' }">
-                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Add text blocks between form elements') }:</label>
-                                            <cp-fieldcontainer>
-                                            <field-wysiwyg bind="form.fields[{idx}].content"></field-wysiwyg>
-                                            </cp-fieldcontainer>
-                                        </div>
-
-                                    </div>
                                 </div>
 
                             </div>
@@ -467,8 +368,84 @@
                             { field.name || 'Field' }
                         </div>
 
+                        <div class="uk-tab uk-flex uk-flex-center uk-margin" data-uk-tab>
+                            <li class="uk-active"><a>{ App.i18n.get('General') }</a></li>
+                            <li><a>{ App.i18n.get('Advanced') }</a></li>
+                        </div>
+
                         <div class="uk-margin-top ref-tab">
+
                             <div>
+                                <div class="uk-grid uk-grid-gutter">
+
+                                    <div class="uk-width-medium-1-2">
+
+                                        <div class="uk-form-row">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Name') }:</label>
+                                            <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="field.name" placeholder="name" pattern="[a-zA-Z0-9_]+" required>
+                                        </div>
+
+                                        <div class="uk-form-row">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Label') }:</label>
+                                            <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="field.label" placeholder="{ App.i18n.get('Label') }">
+                                        </div>
+
+                                        <div class="uk-form-row">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Info') }:</label>
+                                            <textarea class="uk-width-1-1 uk-margin-small-top" bind="field.info" rows="2"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="uk-width-medium-1-2">
+
+                                        <div class="uk-grid">
+
+                                            <div class="uk-width-small-1-2">
+                                                <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Type') }:</label>
+                                                <div class="uk-form-select uk-width-1-1 uk-margin-small-top">
+                                                    <a class="uk-text-capitalize">{ field.type }</a>
+                                                    <select class="uk-width-1-1 uk-text-capitalize" bind="field.type">
+                                                        <option each="{type,typeidx in fieldtypes}" value="{type.value}">{type.name}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="uk-width-small-1-2">
+
+                                                <div class="uk-form-row">
+                                                    <field-boolean bind="field.required" label="{ App.i18n.get('Required') }"></field-boolean>
+                                                </div>
+
+                                                <div class="uk-form-row">
+
+                                                    <field-boolean bind="field.validate" label="{ App.i18n.get('Validate') }" class=""></field-boolean>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="uk-form-row" if="{ ['select','multipleselect'].includes(field.type) && riot.tags['field-key-value-pair'] }">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
+                                            <field-key-value-pair class="uk-width-1-1 uk-margin-small-top" type="text" bind="field.options.options"></field-key-value-pair>
+                                        </div>
+
+                                        <div class="uk-form-row" if="{ field.type == 'honeypot' }">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
+                                            <a class="uk-button" onclick="{ setHoneyPotOptions }">{App.i18n.get('Set default Honey pot options')}</a>
+                                        </div>
+
+                                        <div class="uk-form-row" if="{ field.type == 'contentblock' }">
+<!--                                            <raw content="{ field.content }"></raw>-->
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Add text blocks between form elements') }:</label>
+                                            <cp-fieldcontainer>
+                                            <field-wysiwyg bind="field.content"></field-wysiwyg>
+                                            </cp-fieldcontainer>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="uk-hidden">
 
                                 <div class="uk-form-row">
                                     <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></label>
@@ -624,8 +601,18 @@
                             field.options = {};
                         }
                     });
+                    $this.field = null;
                     $this.update();
                 }
+            });
+
+            App.$(this.root).on('click', '.uk-modal [data-uk-tab] li', function(e) {
+                var item = App.$(this),
+                    idx = item.index();
+
+                item.closest('.uk-tab')
+                    .next('.ref-tab')
+                    .children().addClass('uk-hidden').eq(idx).removeClass('uk-hidden')
             });
 
         });
@@ -758,19 +745,7 @@
             }
 
             modal.show();
-        }
 
-        switchTabAndScrollToOptions(e) {
-            this.tab = 'options';
-            this.update();
-
-            var el = document.querySelector('[data-tab="options"] .uk-grid > [data-idx="'+e.item.idx+'"]');
-
-            // `el.scrollIntoView();` leads to weird issue with unclickable
-            // items behind invisible app-header bar --> use UIkit magic instead
-            UIkit.Utils.scrollToElement(UIkit.$(el),{duration:0});
-
-            el.querySelector('input').focus();
         }
 
         togglelist(e) {
