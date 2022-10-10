@@ -102,7 +102,7 @@
 
                     <div ref="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form">
 
-                        <div class="uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in form.fields }">
+                        <div class="uk-width-{field.width}" data-idx="{ idx }" each="{ field,idx in form.fields }">
 
                             <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -259,7 +259,7 @@
 
                                         <div class="uk-form-row">
                                             <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Info') }:</label>
-                                            <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="form.fields[{idx}].info" placeholder="{ App.i18n.get('Info') }">
+                                            <textarea class="uk-width-1-1 uk-margin-small-top" bind="form.fields[{idx}].info" rows="2"></textarea>
                                         </div>
                                     </div>
 
@@ -542,7 +542,6 @@
         this.templates = {{ json_encode($templates) }};
         this.reorder = false;
         this.tab = 'layout';
-        this.tab = 'options';
         this.field = null;
 
         // link collection item, e. g. privacy notice
@@ -709,10 +708,11 @@
 
                 if (typeof template[option] !== 'undefined') {
                     $this.form[option] = template[option];
-                    $this.update();
                 }
 
             });
+
+            this.update();
 
         }
 
@@ -729,7 +729,6 @@
                 'type'    : 'text',
                 'default' : '',
                 'info'    : '',
-//                 'group'   : '',
                 'options' : {},
                 'width'   : '1-1',
                 'lst'     : true,
