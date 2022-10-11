@@ -178,3 +178,7 @@ Create a custom mail template in `config/forms/emails/formname.php` to use the s
 ![honeypot](https://user-images.githubusercontent.com/13042193/45387248-cc1fba80-b615-11e8-9ce6-81fc2993078a.png)
 
 ![responses](https://user-images.githubusercontent.com/13042193/45387249-cc1fba80-b615-11e8-95ea-f1bd4d9f8b35.png)
+
+## Credits and third party libraries
+
+Icons are from Cockpit CMS v2, (c) Artur Heinze, MIT License

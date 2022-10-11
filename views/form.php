@@ -108,6 +108,7 @@
                                 <div class="uk-grid uk-grid-small">
 
                                     <div class="uk-flex-item-1 uk-flex">
+                                        <img class="uk-margin-small-right" riot-src="{ fieldIcons[field.type] }" alt="" width="20" height="20" if="{ fieldIcons[field.type] }">
                                         <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="form.fields[{idx}].name" placeholder="name" pattern="[a-zA-Z0-9_]+" required>
                                     </div>
 
@@ -365,6 +366,7 @@
                     <div class="uk-modal-dialog uk-modal-dialog-large" if="{field}">
 
                         <div class="uk-form-row uk-text-large uk-text-bold">
+                            <img class="uk-margin-small-right" riot-src="{ fieldIcons[field.type] }" alt="" width="20" height="20" if="{ fieldIcons[field.type] }">
                             { field.name || 'Field' }
                         </div>
 
@@ -530,18 +532,55 @@
         }
 
         this.fieldtypes = [
-            {name:'Text', value:'text'},
-            {name:'Textarea', value:'textarea'},
-            {name:'Date', value:'date'},
-            {name:'Boolean', value:'boolean'},
-            {name:'Select', value:'select'},
-            {name:'Honeypot', value:'honeypot'},
-            {name:'Multipleselect', value:'multipleselect'},
-            {name:'Content Block', value:'contentblock'},
+            {
+                name: 'Text',
+                value:'text',
+                icon: '{{ $app->baseUrl("formvalidation:assets/icons/text.svg") }}'
+            },
+            {
+                name: 'Textarea',
+                value:'textarea',
+                icon: '{{ $app->baseUrl("formvalidation:assets/icons/text.svg") }}'
+            },
+            {
+                name: 'Date',
+                value:'date',
+                icon: '{{ $app->baseUrl("formvalidation:assets/icons/date.svg") }}'
+            },
+            {
+                name: 'Boolean',
+                value:'boolean',
+                icon: '{{ $app->baseUrl("formvalidation:assets/icons/boolean.svg") }}'
+            },
+            {
+                name: 'Select',
+                value:'select',
+                icon: '{{ $app->baseUrl("formvalidation:assets/icons/select.svg") }}'
+            },
+            {
+                name: 'Honeypot',
+                value:'honeypot',
+                icon: '{{ $app->baseUrl("formvalidation:assets/icons/settings.svg") }}'
+            },
+            {
+                name: 'Multipleselect',
+                value:'multipleselect',
+                icon: '{{ $app->baseUrl("formvalidation:assets/icons/select.svg") }}'
+            },
+            {
+                name: 'Content Block',
+                value:'contentblock',
+                icon: '{{ $app->baseUrl("formvalidation:assets/icons/wysiwyg.svg") }}'
+            },
         ];
         // sort by field name
         this.fieldtypes = this.fieldtypes.sort(function(fieldA, fieldB) {
             return fieldA.name.localeCompare(fieldB.name);
+        });
+
+        this.fieldIcons = {};
+        this.fieldtypes.forEach(function(e) {
+            if (e.icon) $this.fieldIcons[e.value] = e.icon;
         });
 
         this.on('mount', function(){
