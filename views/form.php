@@ -112,12 +112,8 @@
                                         <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="form.fields[{idx}].name" placeholder="name" pattern="[a-zA-Z0-9_]+" required>
                                     </div>
 
-                                    <div class="uk-flex-item-2 uk-flex" if="{ field.type == 'honeypot' }">
-                                        <span class="uk-icon-beer uk-margin-small-top" title="{ App.i18n.get('Honeypot') }" data-uk-tooltip></span>
-                                    </div>
-
-                                    <div class="uk-flex-item-2 uk-flex" if="{ field.type == 'privacynotice' }">
-                                        <span class="uk-icon-umbrella uk-margin-small-top" title="{ App.i18n.get('Privacy Notice') }" data-uk-tooltip></span>
+                                    <div class="uk-flex-item-2 uk-flex" if="{ field.options.link }">
+                                        <span class="uk-icon-link uk-margin-small-top" title="{ App.i18n.get('has linked item') }" data-uk-tooltip></span>
                                     </div>
 
                                     <div class="uk-width-1-4">
