@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0
+
+* equals and equalsi filter can now contain arrays
+* dropped experimental mailer settings
+* improved UI
+* changed honeypot error key to `honeypot` instead of custom field name
+* added ability to change `email_forward` via env variable
+* added icons (from Cockpit v2)
+* added multipleselect field
+* added "contentblock" wysiwyg field
+* removed `group` option (may be reimplemented again)
+* added json inspectobject
+* added options for custom error messages (used in CpMultiplane)
+
 ## 0.2.11
 
 * intl extension is now optional --> doesn't throw errors anymore if `idn_to_ascii` is not available, but still required to validate punycode urls correctly

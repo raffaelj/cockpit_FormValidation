@@ -1,14 +1,13 @@
 <?php
 /**
  * Form validator and form builder for Cockpit CMS
- * 
+ *
  * @see       https://github.com/raffaelj/cockpit_FormValidation/
  * @see       https://github.com/agentejo/cockpit/
- * 
- * @version   0.2.11
+ *
+ * @version   0.3.0
  * @author    Raffael Jesche
  * @license   MIT
- * @note      work in progress
  */
 
 $this->helpers['validator'] = 'FormValidation\\Helper\\Validator';
