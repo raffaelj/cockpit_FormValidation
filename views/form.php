@@ -91,6 +91,7 @@
 
                 <ul class="uk-tab uk-margin-large-bottom">
                     <li class="{ tab=='layout' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="layout">{ App.i18n.get('Layout') }</a></li>
+                    <li class="{ tab=='quickedit' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="quickedit">{ App.i18n.get('Quick edit') }</a></li>
                     <li class="{ tab=='validate' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="validate">{ App.i18n.get('Validations') }</a></li>
                     <li class="{ tab=='attributes' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="attributes">{ App.i18n.get('HTML Attributes') }</a></li>
                     <li class="{ tab=='responses' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="responses">{ App.i18n.get('Responses') }</a></li>
@@ -157,6 +158,117 @@
 
                                     </div>
 
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="uk-form-row" if="{tab=='quickedit'}" data-tab="layout">
+
+                    <div ref="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form">
+
+                        <div class="uk-width-1-1" data-idx="{ idx }" each="{ field,idx in form.fields }">
+
+                            <div class="uk-panel uk-panel-box uk-panel-card">
+
+                                <div class="uk-panel-header">
+                                    <div class="uk-panel-title uk-flex uk-flex-middle">
+                                    <div class="uk-flex-item-1">
+                                        <img class="uk-margin-small-right" riot-src="{ fieldIcons[form.fields[idx].type] }" alt="" width="20" height="20" if="{ fieldIcons[form.fields[idx].type] }">
+                                        { form.fields[idx].name || 'Field' }
+                                    </div>
+
+                                    <div class="uk-text-right">
+                                        <ul class="uk-subnav">
+                                            <li>
+                                                <a class="uk-text-{ field.lst ? 'success':'muted'}" onclick="{ togglelist }" title="{ App.i18n.get('Show field on list view') }">
+                                                    <i class="uk-icon-{ field.lst ? 'eye':'eye-slash'}"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a onclick="{ fieldSettings }"><i class="uk-icon-cog uk-text-primary"></i></a>
+                                            </li>
+                                            <li>
+                                                <a class="uk-text-danger" onclick="{ removefield }">
+                                                    <i class="uk-icon-trash"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    </div>
+                                </div>
+
+                                <div class="uk-grid uk-grid-gutter">
+
+                                    <div class="uk-width-medium-1-2">
+
+                                        <div class="uk-form-row">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Name') }:</label>
+                                            <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="form.fields[{idx}].name" placeholder="name" pattern="[a-zA-Z0-9_]+" required>
+                                        </div>
+
+                                        <div class="uk-form-row">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Label') }:</label>
+                                            <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="form.fields[{idx}].label" placeholder="{ App.i18n.get('Label') }">
+                                        </div>
+
+                                        <div class="uk-form-row">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Info') }:</label>
+                                            <textarea class="uk-width-1-1 uk-margin-small-top" bind="form.fields[{idx}].info" rows="2"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="uk-width-medium-1-2">
+
+                                        <div class="uk-grid">
+
+                                            <div class="uk-width-small-1-2">
+                                                <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Type') }:</label>
+                                                <div class="uk-form-select uk-width-1-1 uk-margin-small-top">
+                                                    <a class="uk-text-capitalize">{ field.type }</a>
+                                                    <select class="uk-width-1-1 uk-text-capitalize" bind="form.fields[{idx}].type">
+                                                        <option each="{type,typeidx in fieldtypes}" value="{type.value}">{type.name}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="uk-width-small-1-2">
+
+                                                <div class="uk-form-row">
+                                                    <field-boolean bind="form.fields[{idx}].required" label="{ App.i18n.get('Required') }"></field-boolean>
+                                                </div>
+
+                                                <div class="uk-form-row">
+
+                                                    <field-boolean bind="form.fields[{idx}].validate" label="{ App.i18n.get('Validate') }" class=""></field-boolean>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="uk-form-row" if="{ ['select','multipleselect'].includes(form.fields[idx].type) && riot.tags['field-key-value-pair'] }">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
+                                            <field-key-value-pair class="uk-width-1-1 uk-margin-small-top" type="text" bind="form.fields[{idx}].options.options"></field-key-value-pair>
+                                        </div>
+
+                                        <div class="uk-form-row" if="{ form.fields[idx].type == 'honeypot' }">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
+                                            <a class="uk-button" onclick="{ setHoneyPotOptions }">{App.i18n.get('Set default Honey pot options')}</a>
+                                        </div>
+
+                                        <div class="uk-form-row" if="{ form.fields[idx].type == 'contentblock' }">
+<!--                                            <raw content="{ form.fields[idx].content }"></raw>-->
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Add text blocks between form elements') }:</label>
+                                            <cp-fieldcontainer>
+                                            <field-wysiwyg bind="form.fields[{idx}].content"></field-wysiwyg>
+                                            </cp-fieldcontainer>
+                                        </div>
+
+                                    </div>
                                 </div>
 
                             </div>
