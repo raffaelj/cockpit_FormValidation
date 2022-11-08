@@ -680,6 +680,11 @@
                 value:'contentblock',
                 icon: '{{ $app->baseUrl("formvalidation:assets/icons/wysiwyg.svg") }}'
             },
+            {
+                name: 'File',
+                value:'file',
+                icon: '{{ $app->baseUrl("formvalidation:assets/icons/image.svg") }}'
+            },
         ];
         // sort by field name
         this.fieldtypes = this.fieldtypes.sort(function(fieldA, fieldB) {
