@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+* added quick edit tab
+
 ## 0.3.0
 
 * equals and equalsi filter can now contain arrays
