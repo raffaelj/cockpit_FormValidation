@@ -1,5 +1,5 @@
 <?php
-    
+
 // map field labels to data names
 $out = cockpit('formvalidation')->nameToLabel($data, $frm);
 
@@ -16,7 +16,7 @@ $email_text_after = isset($frm['email_text_after']) && !empty($frm['email_text_a
 <?php endif; ?>
 <?php foreach ($out as $field => $val): ?>
 <p><strong>{{ $field }}:</strong><br />
-{{ $val }}</p>
+{{ (is_string($val) ? $val : json_encode($val)) }}</p>
 <?php endforeach;?>
 <?php if ($email_text_after): ?>
 <p>{{ $email_text_after }}</p>
