@@ -138,17 +138,25 @@ $this->module('forms')->extend([
 
         $frm = $this->form($form);
 
+        // Invalid form name
         if (!$frm) {
             return false;
         }
 
-        // custom form validation
-        if ($this->app->path("#config:forms/{$form}.php") && false===include($this->app->path("#config:forms/{$form}.php"))) {
+        // Load custom form validator
+        if ($this->app->path("#config:forms/{$form}.php") && false === include($this->app->path("#config:forms/{$form}.php"))) {
             return false;
         }
 
+        // Filter submitted data
         $this->app->trigger('forms.submit.before', [$form, &$data, $frm, &$options]);
 
+        // Invalid form data
+        if (empty($data)) {
+            return false;
+        }
+
+        // Send email
         if (isset($frm['email_forward']) && $frm['email_forward']) {
 
             if (!empty(getenv('EMAIL_FORWARD'))) {
@@ -158,9 +166,8 @@ $this->module('forms')->extend([
             $emails          = array_map('trim', explode(',', $frm['email_forward']));
             $filtered_emails = [];
 
+            // Validate each email address individually, push if valid
             foreach ($emails as $to){
-
-                // Validate each email address individually, push if valid
                 if ($this->app->helper('utils')->isEmail($to)){
                     $filtered_emails[] = $to;
                 }
@@ -170,42 +177,52 @@ $this->module('forms')->extend([
 
                 $frm['email_forward'] = implode(',', $filtered_emails);
 
-                // There is an email template available
+                $body = null;
+
+                // Load custom email template
                 if ($template = $this->app->path("#config:forms/emails/{$form}.php")) {
+                    $originalLayout = $this->app->layout;
+                    $this->app->layout = false;
+                    $body = $this->app->view($template, ['data' => $data, 'frm' => $frm]);
+                    $this->app->layout = $originalLayout;
+                }
 
-                    $body = $this->app->renderer->file($template, ['data' => $data, 'frm' => $frm], false);
+                // Filter email content
+                $this->app->trigger('forms.submit.email', [$form, &$data, $frm, &$body, &$options]);
 
-                // Prepare template manually
-                } else {
-
-                    $body = [];
-
-                    foreach ($data as $key => $value) {
-                        $body[] = "<b>{$key}:</b>\n<br>";
-                        $body[] = (is_string($value) ? $value:json_encode($value))."\n<br>";
-                    }
-
-                    $body = implode("\n<br>", $body);
+                // Fallback to default email template
+                if (empty($body)) {
+                    $originalLayout = $this->app->layout;
+                    $this->app->layout = false;
+                    $body = $this->app->view("formvalidation:templates/emails/contactform.php", ['data' => $data, 'frm' => $frm]);
+                    $this->app->layout = $originalLayout;
                 }
 
                 $formname = isset($frm['label']) && trim($frm['label']) ? $frm['label'] : $form;
+                $to       = $frm['email_forward'];
+                $subject  = $options['subject'] ?? $this->app->helper('i18n')->getstr("New form data for: %s", [$formname]);
 
                 try {
-                    $response = $this->app->mailer->mail($frm['email_forward'], $options['subject'] ?? "New form data for: {$formname}", $body, $options);
+                    $response = $this->app->mailer->mail($to, $subject, $body, $options);
                 } catch (\Exception $e) {
                     $response = $e->getMessage();
                 }
             }
         }
 
+        // Push entry to database
         if (isset($frm['save_entry']) && $frm['save_entry']) {
             $entry = ['data' => $data];
             $this->save($form, $entry);
         }
 
-        $this->app->trigger('forms.submit.after', [$form, &$data, $frm]);
+        // Generate response array
+        $response = (isset($response) && $response !== true) ? ['error' => $response, 'data' => $data] : $data;
 
-        return (isset($response) && $response !== true) ? ['error' => $response, 'data' => $data] : $data;
+        // Filter submission response
+        $this->app->trigger('forms.submit.after', [$form, &$data, $frm, &$response]);
+
+        return $response;
     }
 ]);
 
