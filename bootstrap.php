@@ -71,10 +71,8 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
 
     }
 
-    // add altMessage
+    // TOOD: add altMessage
     // $options['altMessage'] = "...";
-
-    // to do...
 
 }, 100);
 
