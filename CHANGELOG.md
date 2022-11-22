@@ -1,5 +1,9 @@
 # Changelog
 
+## Upcoming
+
+* changed priority of `forms.submit.before` to 100 (before it used the default: 0)
+
 ## 0.3.1
 
 * added quick edit tab

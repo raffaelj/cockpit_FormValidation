@@ -76,7 +76,7 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
 
     // to do...
 
-});
+}, 100);
 
 $app->module('formvalidation')->extend([
 
