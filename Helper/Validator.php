@@ -34,7 +34,9 @@ class Validator extends \Lime\Helper {
         // touch original data if you don't want to do this step in your frontend
         if (isset($frm['validate_and_touch_data']) && $frm['validate_and_touch_data']) {
             foreach ($this->data as $key => &$val) {
-                $this->data[$key] = htmlspecialchars(strip_tags(trim($val)));
+                if (is_string($val)) {
+                    $this->data[$key] = htmlspecialchars(strip_tags(trim($val)));
+                }
             }
         }
 
