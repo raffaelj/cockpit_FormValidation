@@ -12,11 +12,43 @@ Work in progress! Feel free to contribute with code, bug reports or feature requ
 
 ## Installation
 
-Copy this repository into `/addons` and name it `FormValidation` or
+Copy this repository into `/addons` and name it `FormValidation` or use the cli.
+
+### via git
 
 ```bash
 cd path/to/cockpit
 git clone https://github.com/raffaelj/cockpit_FormValidation.git addons/FormValidation
+```
+
+### via cp cli
+
+```bash
+cd path/to/cockpit
+./cp install/addon --name FormValidation --url https://github.com/raffaelj/cockpit_FormValidation/archive/master.zip
+```
+
+### via composer
+
+Make sure, that the path to cockpit addons is defined in your projects' `composer.json` file.
+
+```json
+{
+    "name": "my/cockpit-project",
+    "extra": {
+        "installer-paths": {
+            "addons/{$name}": ["type:cockpit-module"]
+        }
+    }
+}
+```
+
+```bash
+cd path/to/cockpit-root
+composer create-project --ignore-platform-reqs aheinze/cockpit .
+composer config extra.installer-paths.addons/{\$name} "type:cockpit-module"
+
+composer require --ignore-platform-reqs raffaelj/cockpit-formvalidation
 ```
 
 ## Requirements:
