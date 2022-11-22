@@ -127,6 +127,68 @@ $app->module('formvalidation')->extend([
 
     },
 
+    /**
+     * Check and retrieve forms uploaded files
+     *
+     * Tested formats:
+     *
+     * <input type="file" name="files[upload]" />
+     * <input type="file" name="files[uploads][]" multiple />
+     * <input type="file" name="files[]" multiple />
+     *
+     * @param String $topLevelKey
+     * @param String $secondLevelKey
+     * @param Boolean $includeNumericKeys
+     * @return array $data
+     */
+    'getUploadedFiles' => function($topLevelKey = 'files', $secondLevelKey = null, $includeNumericKeys = true) {
+
+        $files  = $this->app->param($topLevelKey, [], $_FILES);
+        $data   = [];
+
+        if (isset($files['name']) && is_array($files['name'])) {
+
+            foreach ($files['name'] as $key => $fileNames) {
+
+                if (($secondLevelKey !== null) && $secondLevelKey !== $key && !is_numeric($key)) {
+                    continue;
+                }
+
+                if (is_numeric($key) && !$includeNumericKeys) {
+                    continue;
+                }
+
+                if (is_string($fileNames)) {
+
+                    if (is_uploaded_file($files['tmp_name'][$key]) && !$files['error'][$key]) {
+                        foreach($files as $k => $v) {
+                            $data[$topLevelKey][$k]   = $data[$topLevelKey][$k] ?? [];
+                            $data[$topLevelKey][$k][] = $files[$k][$key];
+                        }
+                    }
+
+                }
+                elseif (is_array($fileNames)) {
+
+                    foreach ($fileNames as $idx => $fileName) {
+                        if (is_uploaded_file($files['tmp_name'][$key][$idx]) && !$files['error'][$key][$idx]) {
+                            foreach($files as $k => $v) {
+                                $data[$topLevelKey][$k]   = $data[$topLevelKey][$k] ?? [];
+
+                                // Output with numeric keys, because 
+                                // cockpit/uploadAssets() can't handle named keys
+                                $data[$topLevelKey][$k][] = $files[$k][$key][$idx];
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        return $data;
+    },
+
 ]);
 
 
