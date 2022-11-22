@@ -27,7 +27,7 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
         $validated = $this('validator')->init($data, $frm);
 
         // send 404 to sender
-        if (false == $validated->response()) {
+        if (false === $validated->response()) {
             $this->stop(404);
         }
 
@@ -131,9 +131,21 @@ $app->module('formvalidation')->extend([
 
 ]);
 
-// overwrite default submit method of forms module to change email_forward via env variable
+
+/**
+ * Extend core "Forms" module behavior.
+ */
 $this->module('forms')->extend([
 
+    /**
+     * Override core "Forms::submit" behavior.
+     *
+     * Implemented proposed changes from Raruto,
+     * added option to overwrite email_forward
+     *
+     * @see https://github.com/agentejo/cockpit/pull/1399
+     * @see https://github.com/Raruto/cockpit-extended-forms
+     */
     'submit' => function($form, $data, $options = []) {
 
         $frm = $this->form($form);
@@ -159,6 +171,7 @@ $this->module('forms')->extend([
         // Send email
         if (isset($frm['email_forward']) && $frm['email_forward']) {
 
+            // overwrite email_forward
             if (!empty(getenv('EMAIL_FORWARD'))) {
                 $frm['email_forward'] = getenv('EMAIL_FORWARD');
             }
