@@ -24,17 +24,17 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
 
     if (isset($frm['validate']) && $frm['validate']) {
 
-        $validated = $this('validator')->init($data, $frm);
+        $validator = $this('validator')->init($data, $frm);
 
         // send 404 to sender
-        if (false === $validated->response()) {
+        if (false === $validator->response()) {
             $this->stop(404);
         }
 
         // continue if true or send error messages to sender
-        if (true !== $validated->response()) {
+        if (true !== $validator->response()) {
 
-            $return = ['error' => $validated->response(), 'data' => $validated->data];
+            $return = ['error' => $validator->response(), 'data' => $validator->data];
 
             // throw Exception when using cockpit as library
             if (!COCKPIT_API_REQUEST && !COCKPIT_ADMIN) {
