@@ -200,7 +200,7 @@ $app->module('formvalidation')->extend([
 
         if ($name === null) $name = $this->formsUploadsFolder;
 
-        $parent = null
+        $parent = null;
         if (strpos($name, '/') !== false) {
             list($parent, $name) = explode('/', $name, 2);
         }
