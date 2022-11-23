@@ -189,6 +189,51 @@ $app->module('formvalidation')->extend([
         return $data;
     },
 
+    'formsUploadsFolder' => 'forms uploads',
+
+    /**
+     * Check and retrieve forms upload folder
+     *
+     * @return array $folder
+     */
+    'getFormsUploadsFolder' => function($name = null) {
+
+        if ($name === null) $name = $this->formsUploadsFolder;
+
+        $parent = null
+        if (strpos($name, '/') !== false) {
+            list($parent, $name) = explode('/', $name, 2);
+        }
+
+        $parentFolder = [];
+        if ($parent !== null) {
+            $grandParent = '';
+            $parentFolder = $this->app->storage->findOne('cockpit/assets_folders', ['name' => $parent, '_p' => $grandParent]);
+
+            if (empty($parentFolder)) {
+                $meta   = [
+                    'name' => $parent,
+                    '_p'   => $grandParent,
+                    '_by'  => '',
+                ];
+                $parentFolder = $this->app->storage->save('cockpit/assets_folders', $meta);
+            }
+        }
+
+        $folder = $this->app->storage->findOne('cockpit/assets_folders', ['name' => $name, '_p' => $parentFolder['_id'] ?? '']);
+
+        if (empty($folder)) {
+            $meta   = [
+                'name' => $name,
+                '_p'   => !empty($parentFolder['_id']) ? $parentFolder['_id'] : '',
+                '_by'  => '',
+            ];
+            $folder = $this->app->storage->save('cockpit/assets_folders', $meta);
+        }
+
+        return $folder;
+    },
+
 ]);
 
 
