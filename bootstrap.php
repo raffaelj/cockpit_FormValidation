@@ -150,7 +150,7 @@ $app->module('formvalidation')->extend([
 
             foreach ($files['name'] as $key => $fileNames) {
 
-                if (($secondLevelKey !== null) && $secondLevelKey !== $key && !is_numeric($key)) {
+                if (($secondLevelKey !== null) && ($secondLevelKey !== $key) && !is_numeric($key)) {
                     continue;
                 }
 
