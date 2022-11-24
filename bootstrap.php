@@ -13,18 +13,20 @@
 $this->helpers['validator'] = 'FormValidation\\Helper\\Validator';
 
 // init + load i18n
-$locale = $app->module('cockpit')->getUser('i18n', $app('i18n')->locale);
+$locale = $this->module('cockpit')->getUser('i18n', $this->helper('i18n')->locale);
 
-if ($translationspath = $app->path("#config:formvalidation/i18n/{$locale}.php")) {
-    $app('i18n')->load($translationspath, $locale);
+if ($translationspath = $this->path("#config:formvalidation/i18n/{$locale}.php")) {
+    $this->helper('i18n')->load($translationspath, $locale);
 }
 
 // validation
-$app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
+$this->on('forms.submit.before', function($form, &$data, $frm, &$options) {
+
+    $validator = null;
 
     if (isset($frm['validate']) && $frm['validate']) {
 
-        $validator = $this('validator')->init($data, $frm);
+        $validator = $this->helper('validator')->init($data, $frm);
 
         // send 404 to sender
         if (false === $validator->response()) {
@@ -76,7 +78,7 @@ $app->on('forms.submit.before', function($form, &$data, $frm, &$options) {
 
 }, 100);
 
-$app->module('formvalidation')->extend([
+$this->module('formvalidation')->extend([
 
     'map' => function($str = null, $datamap = []) {
 
