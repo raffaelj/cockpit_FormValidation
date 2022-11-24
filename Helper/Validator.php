@@ -71,7 +71,7 @@ class Validator extends \Lime\Helper {
         $type = [];
         $honeypot = false;
 
-        foreach($this->fields as $field) {
+        foreach ($this->fields as $field) {
 
             if (isset($field['required']) && $field['required']) {
                 $required[] = $field['name'];
@@ -119,9 +119,11 @@ class Validator extends \Lime\Helper {
 
             $honeypotOptions = $honeypot['options']['validate']['honeypot'];
 
-            $honeypotName = $honeypot['options']['attr']['name'] ?? $honeypotOptions['fieldname'] ?? $honeypot['name'];
+            $honeypotName = $honeypot['options']['attr']['name']
+                ?? $honeypotOptions['fieldname'] ?? $honeypot['name'];
 
-            if (isset($this->data[$honeypotName]) && $this->data[$honeypotName] != $honeypotOptions['expected_value']) {
+            if (isset($this->data[$honeypotName])
+                && $this->data[$honeypotName] != $honeypotOptions['expected_value']) {
 
                 if (isset($honeypotOptions['response'])) {
 
@@ -135,7 +137,7 @@ class Validator extends \Lime\Helper {
 
                 }
                 else {
-                    $this->error['honeypot'] = $this('i18n')->get('Hello spambot');
+                    $this->error['honeypot'] = $this->helper('i18n')->get('Hello spambot');
                 }
 
                 return;
@@ -167,15 +169,16 @@ class Validator extends \Lime\Helper {
         }
 
         // 3. required
-        foreach($required as $name){
+        foreach ($required as $name){
 
-            if(!isset($this->data[$name]) || empty($this->data[$name])){
+            if (!isset($this->data[$name]) || empty($this->data[$name])) {
 
-                $this->error[$name][] = $this('i18n')->get('is required');
+                $this->error[$name][] = $this->helper('i18n')->get('is required');
 
                 // don't validate this field again
-                if (($key = array_search($name, $validate)) !== false)
+                if (($key = array_search($name, $validate)) !== false) {
                     unset($validate[$key]);
+                }
 
             }
 
@@ -185,19 +188,19 @@ class Validator extends \Lime\Helper {
             // to do ...
 
 
-        foreach($validate as $name) {
+        foreach ($validate as $name) {
 
             // 4. type
             if (isset($type[$name])) {
 
-                foreach($type[$name] as $match_type => $not_inverse){
+                foreach ($type[$name] as $match_type => $not_inverse) {
 
                     $match = $this->matchType($name, $match_type);
 
-                    if ($not_inverse && !$match || !$not_inverse && $match){
+                    if ($not_inverse && !$match || !$not_inverse && $match) {
                         $must = $match ? "must be" : "must not be";
                         $must = !$not_inverse ? "must not be" : "must be";
-                        $this->error[$name][] = $this('i18n')->get("$must $match_type");
+                        $this->error[$name][] = $this->helper('i18n')->get("$must $match_type");
                     }
 
                 }
@@ -214,7 +217,7 @@ class Validator extends \Lime\Helper {
                     }
                 }
                 if (!$foundMatch) {
-                    $this->error[$name][] = $this('i18n')->get("doesn't match");
+                    $this->error[$name][] = $this->helper('i18n')->get("doesn't match");
                 }
             }
             if (isset($equalsi[$name])) {
@@ -226,7 +229,7 @@ class Validator extends \Lime\Helper {
                     }
                 }
                 if (!$foundMatch) {
-                    $this->error[$name][] = $this('i18n')->get("doesn't match");
+                    $this->error[$name][] = $this->helper('i18n')->get("doesn't match");
                 }
 
             }
