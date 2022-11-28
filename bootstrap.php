@@ -12,6 +12,22 @@
 
 $this->helpers['validator'] = 'FormValidation\\Helper\\Validator';
 
+/**
+ * Overwrite core Mailer service to enable attachments with filenames
+ * from $_FILES with tmp_name and name
+ */
+$this->service('mailer', function() {
+
+    $options = $this->retrieve('config/mailer', []);
+
+    if (is_string($options)) {
+        parse_str($options, $options);
+    }
+
+    $mailer = new FormValidation\Helper\ChangedMailer($options['transport'] ?? 'mail', $options);
+    return $mailer;
+});
+
 // init + load i18n
 $locale = $this->module('cockpit')->getUser('i18n', $this->helper('i18n')->locale);
 
