@@ -683,10 +683,28 @@
             $this.max_upload_size_datalist[e+' MB'] = e << 20;
         });
 
+<?php
+/**
+ * Generate comma separated list of file extensions from \Lime\Response::$mimeTypes
+ * 
+ * @param string $str first characters of mime type, e. g. 'image/'
+ */
+function getFileExtList($str) {
+    $mimeTypes = array_filter(cockpit()->response::$mimeTypes, function($v) use($str) {
+        return substr($v, 0, strlen($str)) == $str;
+    });
+
+    return implode(', ', array_keys($mimeTypes));
+}
+?>
+
         this.allowed_uploads = '{{ $app->retrieve("allowed_uploads", "*") }}';
         this.allowed_uploads_datalist = {
             'all'    : '*',
             'common' : 'jpg, jpeg, png, gif, svg, pdf, ods, odt, doc, docx, xls, xlsx',
+            'images' : '{{ getFileExtList("image/") }}',
+            'audio'  : '{{ getFileExtList("audio/") }}',
+            'video'  : '{{ getFileExtList("video/") }}',
         };
 
         // link collection item, e. g. privacy notice
