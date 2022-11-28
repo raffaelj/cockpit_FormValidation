@@ -170,7 +170,7 @@
 
                 <div class="uk-form-row" if="{tab=='quickedit'}" data-tab="layout">
 
-                    <div ref="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form">
+                    <div class="uk-grid uk-grid-small uk-grid-gutter uk-form">
 
                         <div class="uk-width-1-1" data-idx="{ idx }" each="{ field,idx in form.fields }">
 
@@ -261,7 +261,6 @@
                                         </div>
 
                                         <div class="uk-form-row" if="{ form.fields[idx].type == 'contentblock' }">
-<!--                                            <raw content="{ form.fields[idx].content }"></raw>-->
                                             <label class="uk-text-muted uk-text-small">{ App.i18n.get('Add text blocks between form elements') }:</label>
                                             <cp-fieldcontainer>
                                             <field-wysiwyg bind="form.fields[{idx}].content"></field-wysiwyg>
@@ -470,8 +469,10 @@
 
                 </div>
 
+
+
                 <div class="uk-modal uk-sortable-nodrag" ref="modalField">
-                    <div class="uk-modal-dialog uk-modal-dialog-large" if="{field}">
+                    <div class="uk-modal-dialog uk-modal-dialog-large" if="{ field }">
 
                         <div class="uk-form-row uk-text-large uk-text-bold">
                             <img class="uk-margin-small-right" riot-src="{ fieldIcons[field.type] }" alt="" width="20" height="20" if="{ fieldIcons[field.type] }">
@@ -544,7 +545,6 @@
                                         </div>
 
                                         <div class="uk-form-row" if="{ field.type == 'contentblock' }">
-<!--                                            <raw content="{ field.content }"></raw>-->
                                             <label class="uk-text-muted uk-text-small">{ App.i18n.get('Add text blocks between form elements') }:</label>
                                             <cp-fieldcontainer>
                                             <field-wysiwyg bind="field.content"></field-wysiwyg>
@@ -632,7 +632,7 @@
         this.field = null;
 
         // link collection item, e. g. privacy notice
-        this.collections = {{ json_encode(cockpit('collections')->getCollectionsInGroup()) }};
+        this.collections = {{ json_encode($app->module('collections')->getCollectionsInGroup()) }};
         this.collection  = '';
 
         if (!this.form.fields || !Array.isArray(this.form.fields)) {

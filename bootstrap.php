@@ -20,9 +20,8 @@ if ($translationspath = $this->path("#config:formvalidation/i18n/{$locale}.php")
 }
 
 // validation
+// TODO: create method and call that directly from Forms::submit() instead of using this event
 $this->on('forms.submit.before', function($form, &$data, $frm, &$options) {
-
-    $validator = null;
 
     if (isset($frm['validate']) && $frm['validate']) {
 
@@ -109,9 +108,9 @@ $this->module('formvalidation')->extend([
 
         $out = [];
 
-        foreach($data as $key => $val){
+        foreach ($data as $key => $val) {
 
-            if( array_key_exists($key, $labels) && !empty($labels[$key]) ){
+            if (array_key_exists($key, $labels) && !empty($labels[$key])) {
 
                 $label = htmlspecialchars($labels[$key]);
 

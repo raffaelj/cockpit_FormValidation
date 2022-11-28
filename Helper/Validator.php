@@ -23,7 +23,7 @@ class Validator extends \Lime\Helper {
 
         $this->data = $data;
 
-        if (isset($frm['fields'])) {
+        if (isset($frm['fields']) && is_array($frm['fields'])) {
             $this->fields = $frm['fields'];
         }
 
@@ -55,7 +55,7 @@ class Validator extends \Lime\Helper {
         }
 
         // check, for validation options
-        if (empty($this->fields)){
+        if (empty($this->fields)) {
 
             // no validation options available
 
@@ -169,7 +169,7 @@ class Validator extends \Lime\Helper {
         }
 
         // 3. required
-        foreach ($required as $name){
+        foreach ($required as $name) {
 
             if (!isset($this->data[$name]) || empty($this->data[$name])) {
 
