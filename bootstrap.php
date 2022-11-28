@@ -91,6 +91,9 @@ $this->on('forms.submit.before', function($form, &$data, $frm, &$options) {
     // TOOD: add altMessage
     // $options['altMessage'] = "...";
 
+    // Filter validated data
+    $this->trigger('forms.validate.after', [$form, &$data, $frm, &$options]);
+
 }, 100);
 
 $this->module('formvalidation')->extend([
