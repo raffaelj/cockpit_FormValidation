@@ -493,8 +493,8 @@
                         </div>
 
                         <div class="uk-tab uk-flex uk-flex-center uk-margin" data-uk-tab>
-                            <li class="uk-active"><a data-modal-tab="general">{ App.i18n.get('General') }</a></li>
-                            <li><a data-modal-tab="advanced">{ App.i18n.get('Advanced') }</a></li>
+                            <li class="{ modalTab == 'general' ? 'uk-active' : '' }"><a data-modal-tab="general">{ App.i18n.get('General') }</a></li>
+                            <li class="{ modalTab == 'advanced' ? 'uk-active' : '' }"><a data-modal-tab="advanced">{ App.i18n.get('Advanced') }</a></li>
                         </div>
 
                         <div class="uk-margin-top ref-tab">
@@ -686,7 +686,7 @@
 <?php
 /**
  * Generate comma separated list of file extensions from \Lime\Response::$mimeTypes
- * 
+ *
  * @param string $str first characters of mime type, e. g. 'image/'
  */
 function getFileExtList($str) {
