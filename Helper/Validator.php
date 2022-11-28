@@ -19,9 +19,26 @@ class Validator extends \Lime\Helper {
     protected $exit   = false;
     protected $allow_extra_fields = false;
 
+    public $maxUploadSizeSystem = 0;
+    public $allowedUploadsSystem = '*';
+
+    public $phpFileUploadErrors = [
+        0 => 'There is no error, the file uploaded with success',
+        1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+        2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+        3 => 'The uploaded file was only partially uploaded',
+        4 => 'No file was uploaded',
+        6 => 'Missing a temporary folder',
+        7 => 'Failed to write file to disk.',
+        8 => 'A PHP extension stopped the file upload.',
+    ];
+
     public function init($data = [], $frm = []) {
 
         $this->data = $data;
+
+        $this->maxUploadSizeSystem  = $this->app->retrieve('max_upload_size', 0);
+        $this->allowedUploadsSystem = $this->app->retrieve('allowed_uploads', '*');
 
         if (isset($frm['fields']) && is_array($frm['fields'])) {
             $this->fields = $frm['fields'];
@@ -70,6 +87,7 @@ class Validator extends \Lime\Helper {
         $validate = [];
         $type = [];
         $honeypot = false;
+        $files = [];
 
         foreach ($this->fields as $field) {
 
@@ -110,6 +128,10 @@ class Validator extends \Lime\Helper {
                 if (is_string($equalsi[$field['name']])) {
                     $equalsi[$field['name']] = [$equalsi[$field['name']]];
                 }
+            }
+
+            if ($field['type'] == 'file') {
+                $files[] = $field['name'];
             }
 
         }
@@ -236,6 +258,25 @@ class Validator extends \Lime\Helper {
 
         }
 
+        // file uploads
+        foreach ($files as $name) {
+
+            if (!isset($this->data[$name]) || empty($this->data[$name]) || !is_array($this->data[$name])) {
+                continue;
+            }
+
+            $res = $this->validateUploadedAssets($this->data[$name], $name);
+
+            if (!empty($res['errors'])) {
+                foreach ($res['errors'] as $errorsPerFile) {
+                    foreach ($errorsPerFile as $err) {
+                        $this->error[$name][] = $err;
+                    }
+                }
+            }
+
+        }
+
     } // end of validate()
 
     public function alnumKeys($arr) {
@@ -309,5 +350,93 @@ class Validator extends \Lime\Helper {
         }
 
     } // end of isUrl()
+
+    public function validateUploadedAssets($param = 'files', $fieldName = '') {
+
+        $files = [];
+
+        if (is_string($param) && isset($_FILES[$param])) {
+            $files = $_FILES[$param];
+        } elseif (is_array($param) && isset($param['name'], $param['error'], $param['tmp_name'])) {
+            $files = $param;
+        }
+
+        $errors    = [];
+
+        if (isset($files['name']) && is_array($files['name'])) {
+
+            foreach ($files['name'] as $k => $v) {
+
+                $max_size = $this->_getMaxUploadSize($fieldName);
+                $allowed  = $this->_getAllowedFileTypes($fieldName);
+
+                $_file  = $this->app->path('#tmp:').'/'.$files['name'][$k];
+                $_isAllowed = $allowed === true ? true : preg_match("/\.({$allowed})$/i", $_file);
+                $_sizeAllowed = $max_size ? filesize($files['tmp_name'][$k]) <= $max_size : true;
+
+                if ($files['error'][$k] || !$_isAllowed || !$_sizeAllowed) {
+
+                    $errors[$k] = [];
+
+                    if ($files['error'][$k]) {
+                        $errors[$k][] = $this->phpFileUploadErrors[$files['error'][$k]];
+                    }
+
+                    if (!$_isAllowed)   $errors[$k][] = 'file type is not allowed';
+                    if (!$_sizeAllowed) $errors[$k][] = 'file size is too big';
+
+                }
+
+            }
+        }
+
+        return compact('files', 'errors');
+    }
+
+    public function _getMaxUploadSize($fieldName) {
+
+        $field = null;
+        foreach ($this->fields as $f) {
+            if ($f['name'] == $fieldName) {
+                $field = $f;
+                break;
+            }
+        }
+
+        if (!$field) return $this->maxUploadSizeSystem;
+
+        $fieldUploadSize = $field['options']['max_upload_size'] ?? 0;
+
+        return $fieldUploadSize ? $fieldUploadSize : $this->maxUploadSizeSystem;
+
+    }
+
+    public function _getAllowedFileTypes($fieldName) {
+
+        $field = null;
+        foreach ($this->fields as $f) {
+            if ($f['name'] == $fieldName) {
+                $field = $f;
+                break;
+            }
+        }
+
+        $allowed = $this->allowedUploadsSystem;
+
+        if ($field) {
+            $fieldAllowedUploads = $field['options']['allowed_uploads'] ?? '';
+            if (!empty($fieldAllowedUploads)) {
+                $allowed = $fieldAllowedUploads;
+            }
+        }
+
+        if ($allowed == '*') $allowed = true;
+        else {
+            $allowed = str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
+        }
+
+        return $allowed;
+
+    }
 
 }
