@@ -78,6 +78,14 @@
                     </div>
 
                     <div class="uk-margin">
+                        <field-boolean bind="form.save_uploaded_assets" label="@lang('Save uploaded assets')"></field-boolean>
+                    </div>
+
+                    <div class="uk-margin">
+                        <field-boolean bind="form.attach_uploaded_assets" label="@lang('Attach uploaded assets to mail')"></field-boolean>
+                    </div>
+
+                    <div class="uk-margin">
                         <field-boolean bind="form.validate_and_touch_data" label="@lang('Validate and touch data')"></field-boolean>
                         <i class="uk-icon uk-icon-info" title="@lang('Before performing any checks, the submitted data will be cleaned by the validator (1.: trim, 2.: strip_tags, 3.: htmlspecialchars)')" data-uk-tooltip></i>
                     </div>
@@ -265,6 +273,11 @@
                                             <cp-fieldcontainer>
                                             <field-wysiwyg bind="form.fields[{idx}].content"></field-wysiwyg>
                                             </cp-fieldcontainer>
+                                        </div>
+
+                                        <div class="uk-form-row" if="{ field.type == 'file' }">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
+                                            <field-boolean bind="form.fields[{idx}].options.multiple" label="{ App.i18n.get('multiple') }"></field-boolean>
                                         </div>
 
                                     </div>
@@ -551,6 +564,28 @@
                                             </cp-fieldcontainer>
                                         </div>
 
+                                        <div class="uk-form-row" if="{ field.type == 'file' }">
+                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
+                                            <div class="uk-form-row">
+                                                <field-boolean bind="field.options.multiple" label="{ App.i18n.get('multiple') }"></field-boolean>
+                                            </div>
+                                            <div class="uk-form-row">
+                                                <field-boolean bind="field.options.attach_uploaded_assets" label="{ App.i18n.get('attach_uploaded_assets') }"></field-boolean>
+                                            </div>
+
+                                            <div class="uk-form-row">
+                                                <label class="uk-text-small">@lang('max_upload_size')</label>
+                                                <span class="uk-badge uk-badge-outline">{ App.Utils.formatSize(field.options.max_upload_size) }</span>
+                                                <span class="uk-badge uk-badge-danger" if="{ max_upload_size < field.options.max_upload_size }">@lang('System maximum:') { maxUploadSize }</span>
+                                                <input list="max_upload_size_datalist" aria-label="@lang('max_upload_size')" class="uk-width-1-1 uk-form-large" type="number" name="label" bind="field.options.max_upload_size" />
+                                            </div>
+
+                                            <div class="uk-form-row">
+                                                <label class="uk-text-small">@lang('allowed_uploads')</label>
+                                                <input list="allowed_uploads_datalist" aria-label="@lang('allowed_uploads')" class="uk-width-1-1 uk-form-large" type="text" name="label" bind="field.options.allowed_uploads" />
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
 
@@ -616,6 +651,14 @@
                 </cp-actionbar>
             </div>
         </div>
+
+        <datalist id="max_upload_size_datalist">
+            <option value="{ val }" each="{ val,idx in max_upload_size_datalist }">{ idx }</option>
+        </datalist>
+
+        <datalist id="allowed_uploads_datalist">
+            <option value="{ val }" each="{ val,idx in allowed_uploads_datalist }">{ idx }</option>
+        </datalist>
     </form>
 
     <script type="view/script">
@@ -630,6 +673,18 @@
         this.reorder = false;
         this.tab = 'layout';
         this.field = null;
+        this.max_upload_size = {{ $app->retrieve('max_upload_size', 0) }};
+        this.maxUploadSize = App.Utils.formatSize(this.max_upload_size);
+        this.max_upload_size_datalist = {};
+        [1,2,3,4,5,10].forEach(function(e) {
+            $this.max_upload_size_datalist[e+' MB'] = e << 20;
+        });
+
+        this.allowed_uploads = '{{ $app->retrieve("allowed_uploads", "*") }}';
+        this.allowed_uploads_datalist = {
+            'all'    : '*',
+            'common' : 'jpg, jpeg, png, gif, svg, pdf, ods, odt, doc, docx, xls, xlsx',
+        };
 
         // link collection item, e. g. privacy notice
         this.collections = {{ json_encode($app->module('collections')->getCollectionsInGroup()) }};
