@@ -493,13 +493,13 @@
                         </div>
 
                         <div class="uk-tab uk-flex uk-flex-center uk-margin" data-uk-tab>
-                            <li class="uk-active"><a>{ App.i18n.get('General') }</a></li>
-                            <li><a>{ App.i18n.get('Advanced') }</a></li>
+                            <li class="uk-active"><a data-modal-tab="general">{ App.i18n.get('General') }</a></li>
+                            <li><a data-modal-tab="advanced">{ App.i18n.get('Advanced') }</a></li>
                         </div>
 
                         <div class="uk-margin-top ref-tab">
 
-                            <div>
+                            <div if="{ modalTab == 'general' }">
                                 <div class="uk-grid uk-grid-gutter">
 
                                     <div class="uk-width-medium-1-2">
@@ -590,7 +590,7 @@
                                 </div>
 
                             </div>
-                            <div class="uk-hidden">
+                            <div if="{ modalTab == 'advanced' }">
 
                                 <div class="uk-form-row">
                                     <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></label>
@@ -672,7 +672,10 @@
         this.templates = {{ json_encode($templates) }};
         this.reorder = false;
         this.tab = 'layout';
+        this.modalTab = 'general';
         this.field = null;
+        this.fieldIdx = null;
+
         this.max_upload_size = {{ $app->retrieve('max_upload_size', 0) }};
         this.maxUploadSize = App.Utils.formatSize(this.max_upload_size);
         this.max_upload_size_datalist = {};
@@ -693,6 +696,25 @@
         if (!this.form.fields || !Array.isArray(this.form.fields)) {
             this.form.fields = [];
         }
+
+        checkAndConvertFieldOptions(options) {
+
+            if (!options || Array.isArray(options)) return {};
+
+            if (options.attr && Array.isArray(options.attr)) {
+                options.attr = {};
+            }
+
+            if (options.validate && Array.isArray(options.validate)) {
+                options.validate = {};
+            }
+
+            return options;
+        }
+
+        this.form.fields.forEach(function(field) {
+            field.options = $this.checkAndConvertFieldOptions(field.options || {});
+        });
 
         this.fieldtypes = [
             {
@@ -802,24 +824,47 @@
 
             modal = UIkit.modal(this.refs.modalField);
             modal.on({
-                'hide.uk.modal': function(){
-                    $this.form.fields.forEach(function(field) {
-                        if (Array.isArray(field.options)) {
-                            field.options = {};
-                        }
+                'hide.uk.modal': function() {
+
+                    $this.form.fields.forEach(function(field, idx) {
+                        field.options = $this.checkAndConvertFieldOptions(field.options || {});
                     });
+                    $this.update();
+
+                    // update key-value-pair in quick edit tab after modifying in modal
+                    if (riot.tags['field-key-value-pair'] && $this.field.options && $this.field.options.options) {
+
+                        // populate changes from advanced tab in modal (object field)
+                        $this.update();
+
+                        var keyValueField = document.querySelector('[data-idx="'+$this.fieldIdx+'"] field-key-value-pair');
+                        if (keyValueField && keyValueField._tag) {
+                            keyValueField._tag.updateKeysValues();
+                            keyValueField._tag.update();
+                        }
+                    }
+
+                    // update wysiwyg field in quick edit tab after modifying in modal
+                    if ($this.field.content) {
+
+                        var wysiwygField = document.querySelector('[data-idx="'+$this.fieldIdx+'"] field-wysiwyg textarea');
+                        if (wysiwygField && wysiwygField.id) {
+                            var editor = tinymce.get(wysiwygField.id);
+                            editor.setContent($this.field.content);
+                        }
+                    }
+
                     $this.field = null;
+                    $this.fieldIdx = null;
                     $this.update();
                 }
             });
 
-            App.$(this.root).on('click', '.uk-modal [data-uk-tab] li', function(e) {
-                var item = App.$(this),
-                    idx = item.index();
+            App.$(this.root).on('click', '.uk-modal [data-uk-tab] li a', function(e) {
 
-                item.closest('.uk-tab')
-                    .next('.ref-tab')
-                    .children().addClass('uk-hidden').eq(idx).removeClass('uk-hidden')
+                $this.modalTab = e.target.dataset.modalTab;
+                $this.update();
+
             });
 
         });
@@ -945,7 +990,8 @@
 
         fieldSettings(e) {
 
-            this.field = e.item.field;
+            this.field    = e.item.field;
+            this.fieldIdx = e.item.idx;
 
             if (this.field.options && this.field.options.link && this.field.options.link.link) {
                 this.collection = this.field.options.link.link;
