@@ -179,8 +179,8 @@ $this->module('formvalidation')->extend([
 
                     if (is_uploaded_file($files['tmp_name'][$key]) && !$files['error'][$key]) {
                         foreach($files as $k => $v) {
-                            $data[$topLevelKey][$k]   = $data[$topLevelKey][$k] ?? [];
-                            $data[$topLevelKey][$k][] = $files[$k][$key];
+                            $data[$k]   = $data[$k] ?? [];
+                            $data[$k][] = $files[$k][$key];
                         }
                     }
 
@@ -190,11 +190,11 @@ $this->module('formvalidation')->extend([
                     foreach ($fileNames as $idx => $fileName) {
                         if (is_uploaded_file($files['tmp_name'][$key][$idx]) && !$files['error'][$key][$idx]) {
                             foreach($files as $k => $v) {
-                                $data[$topLevelKey][$k]   = $data[$topLevelKey][$k] ?? [];
+                                $data[$k]   = $data[$k] ?? [];
 
                                 // Output with numeric keys, because 
                                 // cockpit/uploadAssets() can't handle named keys
-                                $data[$topLevelKey][$k][] = $files[$k][$key][$idx];
+                                $data[$k][] = $files[$k][$key][$idx];
                             }
                         }
                     }
