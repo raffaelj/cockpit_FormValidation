@@ -574,14 +574,15 @@
                                             </div>
 
                                             <div class="uk-form-row">
-                                                <label class="uk-text-small">@lang('max_upload_size')</label>
+                                                <label class="uk-text-muted uk-text-small">@lang('Upload size maximum in bytes')</label>
                                                 <span class="uk-badge uk-badge-outline">{ App.Utils.formatSize(field.options.max_upload_size) }</span>
                                                 <span class="uk-badge uk-badge-danger" if="{ max_upload_size < field.options.max_upload_size }">@lang('System maximum:') { maxUploadSize }</span>
                                                 <input list="max_upload_size_datalist" aria-label="@lang('max_upload_size')" class="uk-width-1-1 uk-form-large" type="number" name="label" bind="field.options.max_upload_size" />
                                             </div>
 
                                             <div class="uk-form-row">
-                                                <label class="uk-text-small">@lang('allowed_uploads')</label>
+                                                <label class="uk-text-muted uk-text-small uk-display-block">@lang('Allowed file extensions (comma separated list without leading dots)')</label>
+                                                <span class="uk-text-small"> @lang('Example'): <code>jpg, jpeg, png</code></span>
                                                 <input list="allowed_uploads_datalist" aria-label="@lang('allowed_uploads')" class="uk-width-1-1 uk-form-large" type="text" name="label" bind="field.options.allowed_uploads" />
                                             </div>
                                         </div>
