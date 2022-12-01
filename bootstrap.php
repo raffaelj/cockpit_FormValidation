@@ -163,8 +163,8 @@ $this->module('formvalidation')->extend([
      */
     'getUploadedFiles' => function($topLevelKey = 'files', $secondLevelKey = null, $includeNumericKeys = true) {
 
-        $files  = $this->app->param($topLevelKey, [], $_FILES);
-        $data   = [];
+        $files = $this->app->param($topLevelKey, [], $_FILES);
+        $data  = [];
 
         if (isset($files['name']) && is_array($files['name'])) {
 
@@ -350,6 +350,10 @@ $this->module('forms')->extend([
 
         // Push entry to database
         if (isset($frm['save_entry']) && $frm['save_entry']) {
+
+            // Filter submitted data
+            $this->app->trigger('forms.submit.save', [$form, &$data, $frm]);
+
             $entry = ['data' => $data];
             $this->save($form, $entry);
         }
