@@ -218,7 +218,9 @@ $this->module('formvalidation')->extend([
      */
     'getFormsUploadsFolder' => function($name = null) {
 
-        if ($name === null) $name = $this->formsUploadsFolder;
+        if ($name === null) {
+            $name = $this->app->retrieve('formvalidation/formsUploadsFolder', $this->formsUploadsFolder);
+        }
 
         $parent = null;
         if (strpos($name, '/') !== false) {
