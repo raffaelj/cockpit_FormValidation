@@ -195,8 +195,8 @@ $this->module('formvalidation')->extend([
                             foreach($files as $k => $v) {
                                 $data[$k]   = $data[$k] ?? [];
 
-                                // Output with numeric keys, because 
-                                // cockpit/uploadAssets() can't handle named keys
+                                // Output with numeric keys, because
+                                // Cockpit::uploadAssets() can't handle named keys
                                 $data[$k][] = $files[$k][$key][$idx];
                             }
                         }
