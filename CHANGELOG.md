@@ -1,8 +1,24 @@
 # Changelog
 
-## Upcoming
+## 0.4.0
 
-* changed priority of `forms.submit.before` to 100 (before it used the default: 0)
+* changed priority of validation event on `forms.submit.before` to 100 (before it used the default: 0)
+* added event `forms.validate.after`
+* changed core `Forms::submit()` method
+  * implemented proposals from @raruto - inspired by ExtendedForms addon
+    * use default mail template from addon
+    * added `forms.submit.email` event
+    * changed `forms.submit.after` event (now with `$response` argument)
+    * return `false` on empty data after `forms.submit.before` event
+  * added event `forms.submit.save`
+* fixed possible array to string conversion if `validate_and_touch_data` is activated
+* added notes, how to install addon via composer/git/cp cli
+* added ability to upload files
+  * added file field to GUI
+  * added methods to validate and store uploaded files
+  * changed core Mailer service to enable attachments with filenames from `$_FILES` with `tmp_name` and `name`
+* fixed updating issues from modal (quick edit tab, advanced tab in modal, object field, key-valu-pair field)
+* improved default form template
 
 ## 0.3.1
 
@@ -14,7 +30,7 @@
 * dropped experimental mailer settings
 * improved UI
 * changed honeypot error key to `honeypot` instead of custom field name
-* added ability to change `email_forward` via env variable
+* added ability to change `email_forward` via env variable (had to overwrite core `Forms::submit()` method)
 * added icons (from Cockpit v2)
 * added multipleselect field
 * added "contentblock" wysiwyg field
