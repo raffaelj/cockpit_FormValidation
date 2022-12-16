@@ -78,11 +78,11 @@
                     </div>
 
                     <div class="uk-margin">
-                        <field-boolean bind="form.save_uploaded_assets" label="@lang('Save uploaded assets')"></field-boolean>
+                        <field-boolean bind="form.save_uploaded_assets" label="@lang('Save uploaded files')"></field-boolean>
                     </div>
 
                     <div class="uk-margin">
-                        <field-boolean bind="form.attach_uploaded_assets" label="@lang('Attach uploaded assets to mail')"></field-boolean>
+                        <field-boolean bind="form.attach_uploaded_assets" label="@lang('Attach uploaded files to mail')"></field-boolean>
                     </div>
 
                     <div class="uk-margin">
@@ -98,11 +98,11 @@
             <div class="uk-width-medium-3-4">
 
                 <ul class="uk-tab uk-margin-large-bottom">
-                    <li class="{ tab=='layout' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="layout">{ App.i18n.get('Layout') }</a></li>
-                    <li class="{ tab=='quickedit' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="quickedit">{ App.i18n.get('Quick edit') }</a></li>
-                    <li class="{ tab=='validate' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="validate">{ App.i18n.get('Validations') }</a></li>
-                    <li class="{ tab=='attributes' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="attributes">{ App.i18n.get('HTML Attributes') }</a></li>
-                    <li class="{ tab=='responses' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="responses">{ App.i18n.get('Responses') }</a></li>
+                    <li class="{ tab=='layout' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="layout">@lang('Layout')</a></li>
+                    <li class="{ tab=='quickedit' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="quickedit">@lang('Quick edit')</a></li>
+                    <li class="{ tab=='validate' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="validate">@lang('Validations')</a></li>
+                    <li class="{ tab=='attributes' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="attributes">@lang('HTML Attributes')</a></li>
+                    <li class="{ tab=='responses' && 'uk-active'}"><a class="" onclick="{ toggleTab }" data-tab="responses">@lang('Responses')</a></li>
                     <li><a class="" onclick="{showEntryObject}">@lang('Json')</a></li>
                 </ul>
 
@@ -260,7 +260,7 @@
 
                                         <div class="uk-form-row" if="{ ['select','multipleselect'].includes(form.fields[idx].type) && riot.tags['field-key-value-pair'] }">
                                             <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
-                                            <field-key-value-pair class="uk-width-1-1 uk-margin-small-top" type="text" bind="form.fields[{idx}].options.options"></field-key-value-pair>
+                                            <field-key-value-pair class="uk-width-1-1 uk-margin-small-top" bind="form.fields[{idx}].options.options"></field-key-value-pair>
                                         </div>
 
                                         <div class="uk-form-row" if="{ form.fields[idx].type == 'honeypot' }">
@@ -271,13 +271,13 @@
                                         <div class="uk-form-row" if="{ form.fields[idx].type == 'contentblock' }">
                                             <label class="uk-text-muted uk-text-small">{ App.i18n.get('Add text blocks between form elements') }:</label>
                                             <cp-fieldcontainer>
-                                            <field-wysiwyg bind="form.fields[{idx}].content"></field-wysiwyg>
+                                                <field-wysiwyg bind="form.fields[{idx}].content"></field-wysiwyg>
                                             </cp-fieldcontainer>
                                         </div>
 
                                         <div class="uk-form-row" if="{ field.type == 'file' }">
-                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
-                                            <field-boolean bind="form.fields[{idx}].options.multiple" label="{ App.i18n.get('multiple') }"></field-boolean>
+                                            <div class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</div>
+                                            <field-boolean bind="form.fields[{idx}].options.multiple" label="{ App.i18n.get('Allow uploading multiple files') }"></field-boolean>
                                         </div>
 
                                     </div>
@@ -428,7 +428,7 @@
 
                     <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
 
-                        <label class="uk-text-small">@lang('Custom form massages')</label>
+                        <label class="uk-text-small">@lang('Custom form messages')</label>
 
                         <div class="uk-panel uk-panel-box uk-panel-card uk-margin">
 
@@ -549,7 +549,7 @@
 
                                         <div class="uk-form-row" if="{ ['select','multipleselect'].includes(field.type) && riot.tags['field-key-value-pair'] }">
                                             <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
-                                            <field-key-value-pair class="uk-width-1-1 uk-margin-small-top" type="text" bind="field.options.options"></field-key-value-pair>
+                                            <field-key-value-pair class="uk-width-1-1 uk-margin-small-top" bind="field.options.options"></field-key-value-pair>
                                         </div>
 
                                         <div class="uk-form-row" if="{ field.type == 'honeypot' }">
@@ -560,30 +560,27 @@
                                         <div class="uk-form-row" if="{ field.type == 'contentblock' }">
                                             <label class="uk-text-muted uk-text-small">{ App.i18n.get('Add text blocks between form elements') }:</label>
                                             <cp-fieldcontainer>
-                                            <field-wysiwyg bind="field.content"></field-wysiwyg>
+                                                <field-wysiwyg bind="field.content"></field-wysiwyg>
                                             </cp-fieldcontainer>
                                         </div>
 
                                         <div class="uk-form-row" if="{ field.type == 'file' }">
-                                            <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</label>
+                                            <div class="uk-text-muted uk-text-small">{ App.i18n.get('Field Options') }:</div>
                                             <div class="uk-form-row">
-                                                <field-boolean bind="field.options.multiple" label="{ App.i18n.get('multiple') }"></field-boolean>
-                                            </div>
-                                            <div class="uk-form-row">
-                                                <field-boolean bind="field.options.attach_uploaded_assets" label="{ App.i18n.get('attach_uploaded_assets') }"></field-boolean>
+                                                <field-boolean bind="field.options.multiple" label="{ App.i18n.get('Allow uploading multiple files') }"></field-boolean>
                                             </div>
 
                                             <div class="uk-form-row">
                                                 <label class="uk-text-muted uk-text-small">@lang('Upload size maximum in bytes')</label>
                                                 <span class="uk-badge uk-badge-outline">{ App.Utils.formatSize(field.options.max_upload_size) }</span>
                                                 <span class="uk-badge uk-badge-danger" if="{ max_upload_size < field.options.max_upload_size }">@lang('System maximum:') { maxUploadSize }</span>
-                                                <input list="max_upload_size_datalist" aria-label="@lang('max_upload_size')" class="uk-width-1-1 uk-form-large" type="number" name="label" bind="field.options.max_upload_size" />
+                                                <input list="max_upload_size_datalist" aria-label="@lang('Max. upload size')" class="uk-width-1-1 uk-form-large" type="number" bind="field.options.max_upload_size" />
                                             </div>
 
                                             <div class="uk-form-row">
                                                 <label class="uk-text-muted uk-text-small uk-display-block">@lang('Allowed file extensions (comma separated list without leading dots)')</label>
                                                 <span class="uk-text-small"> @lang('Example'): <code>jpg, jpeg, png</code></span>
-                                                <input list="allowed_uploads_datalist" aria-label="@lang('allowed_uploads')" class="uk-width-1-1 uk-form-large" type="text" name="label" bind="field.options.allowed_uploads" />
+                                                <input list="allowed_uploads_datalist" aria-label="@lang('Allowed file extensions (comma separated list without leading dots)')" class="uk-width-1-1 uk-form-large" type="text" bind="field.options.allowed_uploads" />
                                             </div>
                                         </div>
 
@@ -606,21 +603,21 @@
                                         <option value="{ col.name }" each="{ col in collections }">{ col.label || col.name }</option>
                                     </select>
 
-                                    <div class="uk-grid uk-grid-small uk-grid-match uk-margin uk-width-1-1">
+                                    <div class="uk-grid uk-grid-small uk-grid-match uk-margin uk-width-1-1" if="{ collection }">
 
-                                        <div class="uk-width-1-3">
+                                        <div class="uk-width-1-3" if="{ field.options.link }">
                                             <label>{ App.i18n.get('Text before link') }</label>
-                                            <field-textarea rows="2" bind="field.options.link.text_before" if="{field.options.link}"></field-textarea>
+                                            <field-textarea rows="2" bind="field.options.link.text_before"></field-textarea>
                                         </div>
 
-                                        <div class="uk-width-1-3">
+                                        <div class="uk-width-1-{ field.options.link ? 3 : 1 }">
                                             <label>{ App.i18n.get('Collectionlink') }</label>
-                                            <field-collectionlink link="{ collection }" class="" bind="field.options.link" if="{collection}"></field-collectionlink>
+                                            <field-collectionlink link="{ collection }" class="" bind="field.options.link"></field-collectionlink>
                                         </div>
 
-                                        <div class="uk-width-1-3">
+                                        <div class="uk-width-1-3" if="{ field.options.link }">
                                             <label>{ App.i18n.get('Text after link') }</label>
-                                            <field-textarea rows="2" bind="field.options.link.text_after" if="{field.options.link}"></field-textarea>
+                                            <field-textarea rows="2" bind="field.options.link.text_after"></field-textarea>
                                         </div>
 
                                     </div>
@@ -875,6 +872,7 @@ function getFileExtList($str) {
 
                     $this.field = null;
                     $this.fieldIdx = null;
+                    $this.collection = null;
                     $this.update();
                 }
             });
