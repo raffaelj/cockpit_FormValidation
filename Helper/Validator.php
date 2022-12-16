@@ -1,15 +1,12 @@
 <?php
-/*
-  Notes:
-
-    requires: PECL intl extension (for punycode conversion of urls and mail adresses)
-
-    Work in progress! Feel free to contribute with code, bug reports or feature requests.
-
-*/
 
 namespace FormValidation\Helper;
 
+/**
+ * Validator for form inputs in Cockpit CMS v1
+ *
+ * @suggests PECL intl extension (for punycode conversion of urls and mail adresses)
+ */
 class Validator extends \Lime\Helper {
 
     public $data = [];
@@ -22,17 +19,6 @@ class Validator extends \Lime\Helper {
     public $maxUploadSizeSystem = 0;
     public $allowedUploadsSystem = '*';
 
-    public $phpFileUploadErrors = [
-        0 => 'There is no error, the file uploaded with success',
-        1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
-        2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
-        3 => 'The uploaded file was only partially uploaded',
-        4 => 'No file was uploaded',
-        6 => 'Missing a temporary folder',
-        7 => 'Failed to write file to disk.',
-        8 => 'A PHP extension stopped the file upload.',
-    ];
-
     public function init($data = [], $frm = []) {
 
         $this->data = $data;
@@ -40,7 +26,7 @@ class Validator extends \Lime\Helper {
         $this->maxUploadSizeSystem  = $this->app->retrieve('max_upload_size', 0);
         $this->allowedUploadsSystem = $this->app->retrieve('allowed_uploads', '*');
 
-        if (isset($frm['fields']) && is_array($frm['fields'])) {
+        if (isset($frm['fields']) && \is_array($frm['fields'])) {
             $this->fields = $frm['fields'];
         }
 
@@ -51,9 +37,10 @@ class Validator extends \Lime\Helper {
         // touch original data if you don't want to do this step in your frontend
         if (isset($frm['validate_and_touch_data']) && $frm['validate_and_touch_data']) {
             foreach ($this->data as $key => &$val) {
-                if (is_string($val)) {
-                    $this->data[$key] = htmlspecialchars(strip_tags(trim($val)));
+                if (\is_string($val)) {
+                    $this->data[$key] = \htmlspecialchars(\strip_tags(\trim($val)));
                 }
+                // TODO: handle arrays
             }
         }
 
@@ -61,33 +48,30 @@ class Validator extends \Lime\Helper {
 
         return $this;
 
-    } // end of init()
+    }
 
     public function validate() {
 
+        $i18n = $this->app->helper('i18n');
+
         // check, if key names are alphanumeric
-        if (!$this->alnumKeys($this->data)) {
-            // error message will be applied in alnumKeys()
-            return;
+        $hasInvalidFieldNames = false;
+        foreach (\array_keys($this->data) as $fieldName) {
+            if (!$this->isValidFieldName($fieldName)) {
+                $this->error['validator'][] = "{$fieldName}: " . $i18n->get('The field name contains invalid characters.');
+                $hasInvalidFieldNames = true;
+            }
         }
+        if ($hasInvalidFieldNames) return;
 
-        // check, for validation options
-        if (empty($this->fields)) {
-
-            // no validation options available
-
-            // to do ...
-
-            return;
-
-        }
+        if (empty($this->fields)) return;
 
         // validations
         $required = [];
         $validate = [];
-        $type = [];
+        $types    = [];
         $honeypot = false;
-        $files = [];
+        $files    = [];
 
         foreach ($this->fields as $field) {
 
@@ -107,25 +91,25 @@ class Validator extends \Lime\Helper {
             }
 
             if (isset($field['options']['validate']['type'])
-                && array_key_exists($field['name'], $this->data)) {
+                && \array_key_exists($field['name'], $this->data)) {
 
-                $type[$field['name']] = $field['options']['validate']['type'];
+                $types[$field['name']] = $field['options']['validate']['type'];
             }
 
             if (isset($field['options']['validate']['equals'])
-                && array_key_exists($field['name'], $this->data)) {
+                && \array_key_exists($field['name'], $this->data)) {
 
                 $equals[$field['name']] = $field['options']['validate']['equals'];
-                if (is_string($equals[$field['name']])) {
+                if (\is_string($equals[$field['name']])) {
                     $equals[$field['name']] = [$equals[$field['name']]];
                 }
             }
 
             if (isset($field['options']['validate']['equalsi'])
-                && array_key_exists($field['name'], $this->data)) {
+                && \array_key_exists($field['name'], $this->data)) {
 
                 $equalsi[$field['name']] = $field['options']['validate']['equalsi'];
-                if (is_string($equalsi[$field['name']])) {
+                if (\is_string($equalsi[$field['name']])) {
                     $equalsi[$field['name']] = [$equalsi[$field['name']]];
                 }
             }
@@ -159,7 +143,7 @@ class Validator extends \Lime\Helper {
 
                 }
                 else {
-                    $this->error['honeypot'] = $this->helper('i18n')->get('Hello spambot');
+                    $this->error['honeypot'] = $i18n->get('Hello spambot');
                 }
 
                 return;
@@ -171,19 +155,19 @@ class Validator extends \Lime\Helper {
         // 2. compare sent field names with names from the form builder
         if (!$this->allow_extra_fields) {
 
-            $diff = array_diff(array_keys($this->data), array_column($this->fields, 'name'));
+            $diff = \array_diff(\array_keys($this->data), \array_column($this->fields, 'name'));
 
             // honeypot might have a positive projection (will always be sent)
             // with a different name, then the field name
             if ($honeypot) {
-                if (($key = array_search($honeypotName, $diff)) !== false) {
+                if (($key = \array_search($honeypotName, $diff)) !== false) {
                     unset($diff[$key]);
                 }
             }
 
             if (!empty($diff)) {
 
-                $this->error["validator"][] = 'These fields are not allowed: '. implode(', ', $diff);
+                $this->error["validator"][] = 'These fields are not allowed: '. \implode(', ', $diff);
                 return;
 
             }
@@ -195,10 +179,10 @@ class Validator extends \Lime\Helper {
 
             if (!isset($this->data[$name]) || empty($this->data[$name])) {
 
-                $this->error[$name][] = $this->helper('i18n')->get('is required');
+                $this->error[$name][] = $i18n->get('This field is required.');
 
                 // don't validate this field again
-                if (($key = array_search($name, $validate)) !== false) {
+                if (($key = \array_search($name, $validate)) !== false) {
                     unset($validate[$key]);
                 }
 
@@ -213,16 +197,47 @@ class Validator extends \Lime\Helper {
         foreach ($validate as $name) {
 
             // 4. type
-            if (isset($type[$name])) {
+            if (isset($types[$name])) {
 
-                foreach ($type[$name] as $match_type => $not_inverse) {
+                foreach ($types[$name] as $type => $expectTrue) {
 
-                    $match = $this->matchType($name, $match_type);
+                    switch ($type) {
 
-                    if ($not_inverse && !$match || !$not_inverse && $match) {
-                        $must = $match ? "must be" : "must not be";
-                        $must = !$not_inverse ? "must not be" : "must be";
-                        $this->error[$name][] = $this->helper('i18n')->get("$must $match_type");
+                        case 'mail':
+                            $result = $this->isEmail($this->data[$name]);
+                            if (($result && !$expectTrue) || (!$result && $expectTrue)) {
+                                $this->error[$name][] = $expectTrue
+                                    ? $i18n->get('Please enter a valid mail address.')
+                                    : $i18n->get('This field must not be a mail address.');
+                            }
+                            break;
+
+                        case 'phone':
+                            if ($expectTrue) {
+                                if (!$this->isPhoneNumber($this->data[$name])) {
+                                    $this->error[$name][] = $i18n->get('Please enter a valid phone number.');
+                                }
+                            }
+                            break;
+
+                        case 'url':
+                            $result = $this->isUrl($this->data[$name]);
+                            if (($result && !$expectTrue) || (!$result && $expectTrue)) {
+                                $this->error[$name][] = $expectTrue
+                                    ? $i18n->get('Please enter a url.')
+                                    : $i18n->get('This field must not be a url.');
+                            }
+                            break;
+
+                        case 'number':
+                            $result = $this->isNumeric($this->data[$name]);
+                            if (($result && !$expectTrue) || (!$result && $expectTrue)) {
+                                $this->error[$name][] = $expectTrue
+                                    ? $i18n->get('Please enter a number.')
+                                    : $i18n->get('This field must not be a number.');
+                            }
+                            break;
+
                     }
 
                 }
@@ -231,29 +246,16 @@ class Validator extends \Lime\Helper {
 
             // 5. equals
             if (isset($equals[$name])) {
-                $foundMatch = false;
-                foreach ($equals[$name] as $v) {
-                    if ($this->data[$name] == $v) {
-                        $foundMatch = true;
-                        break;
-                    }
-                }
-                if (!$foundMatch) {
-                    $this->error[$name][] = $this->helper('i18n')->get("doesn't match");
+
+                if (!$this->equals($this->data[$name], $eqals[$name])) {
+                    $this->error[$name][] = $i18n->get("This field doesn't match.");
                 }
             }
             if (isset($equalsi[$name])) {
-                $foundMatch = false;
-                foreach ($equalsi[$name] as $v) {
-                    if (strtolower($this->data[$name]) == strtolower($v)) {
-                        $foundMatch = true;
-                        break;
-                    }
-                }
-                if (!$foundMatch) {
-                    $this->error[$name][] = $this->helper('i18n')->get("doesn't match");
-                }
 
+                if (!$this->equals($this->data[$name], $equalsi[$name], false)) {
+                    $this->error[$name][] = $i18n->get("This field doesn't match.");
+                }
             }
 
         }
@@ -261,7 +263,7 @@ class Validator extends \Lime\Helper {
         // file uploads
         foreach ($files as $name) {
 
-            if (!isset($this->data[$name]) || empty($this->data[$name]) || !is_array($this->data[$name])) {
+            if (!isset($this->data[$name]) || empty($this->data[$name]) || !\is_array($this->data[$name])) {
                 continue;
             }
 
@@ -277,49 +279,7 @@ class Validator extends \Lime\Helper {
 
         }
 
-    } // end of validate()
-
-    public function alnumKeys($arr) {
-
-        // returns false if any key name is not alphanumeric or '-' or '_'
-
-        $ret = true;
-        $valid = ["-", "_"];
-
-        foreach(array_keys($arr) as $key){
-
-            if( !ctype_alnum( str_replace($valid, "", $key) ) ){
-                $this->error[$key][] = "allowed characters in key names: 'a-zA-Z0-9', '-' and '_'";
-                $ret = false;
-            }
-
-        }
-
-        return $ret;
-
-    } // end of alnumKeys()
-
-    public function matchType($field, $type) {
-
-        switch ($type) {
-
-            case 'mail':
-                return $this->isEmail($this->data[$field]);
-
-            case 'phone':
-                return !preg_match('~[^-\s\d./()+]~', $this->data[$field]);
-
-            case 'url':
-                return $this->isUrl($this->data[$field]);
-
-            case 'number':
-                return \is_numeric($this->data[$field]);
-
-        }
-
-        return false;
-
-    } // end of matchType()
+    }
 
     public function response() {
 
@@ -329,7 +289,22 @@ class Validator extends \Lime\Helper {
 
         return true;
 
-    } // end of response()
+    }
+
+    public function isAlphaNumeric($str) {
+        return \ctype_alnum($str);
+    }
+
+    /**
+     * Validate field name
+     * Allowed characters: `a-zA-Z0-9`, `-`, `_`
+     *
+     * @param string $str
+     * */
+    public function isValidFieldName($str) {
+        $allowed = ['-', '_'];
+        return $this->isAlphaNumeric(\str_replace($allowed, '', $str));
+    }
 
     public function isEmail($str) {
 
@@ -339,7 +314,7 @@ class Validator extends \Lime\Helper {
             return \filter_var($str, FILTER_VALIDATE_EMAIL);
         }
 
-    } // end of isEmail()
+    }
 
     public function isUrl($str) {
 
@@ -349,21 +324,57 @@ class Validator extends \Lime\Helper {
             return \filter_var($str, FILTER_VALIDATE_URL);
         }
 
-    } // end of isUrl()
+    }
+
+    /*
+     * Match valid characters in phone numbers,
+     * e. g.: `01234567890`, `(0) 123 - 4567890`, `+49 - 123 4567890`
+     * This method can only be used for positive matches, invalid phone numbers
+     * like `000` or `+1` will also validate to true
+     */
+    public function isPhoneNumber($str) {
+        return !\preg_match('~[^-\s\d./()+]~', $str);
+    }
+
+    public function isNumeric($val) {
+        return \is_numeric($val);
+    }
+
+    public function equals($str, $references, $caseSensitive = true) {
+        if (!\is_array($references)) $references = [$references];
+        if (!$caseSensitive) $str = \strtolower($str);
+        foreach ($references as $reference) {
+            if ($caseSensitive && $str == $reference) return true;
+            if (!$caseSensitive && $str == \strtolower($reference)) return true;
+        }
+        return false;
+    }
 
     public function validateUploadedAssets($param = 'files', $fieldName = '') {
 
-        $files = [];
+        $files  = [];
+        $errors = [];
 
-        if (is_string($param) && isset($_FILES[$param])) {
+        if (\is_string($param) && isset($_FILES[$param])) {
             $files = $_FILES[$param];
-        } elseif (is_array($param) && isset($param['name'], $param['error'], $param['tmp_name'])) {
+        } elseif (\is_array($param) && isset($param['name'], $param['error'], $param['tmp_name'])) {
             $files = $param;
         }
 
-        $errors    = [];
+        $i18n = $this->app->helper('i18n');
 
-        if (isset($files['name']) && is_array($files['name'])) {
+        $phpFileUploadErrors = [
+            0 => $i18n->get('There is no error, the file uploaded with success'),
+            1 => $i18n->get('The uploaded file exceeds the upload_max_filesize directive in php.ini'),
+            2 => $i18n->get('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form'),
+            3 => $i18n->get('The uploaded file was only partially uploaded'),
+            4 => $i18n->get('No file was uploaded'),
+            6 => $i18n->get('Missing a temporary folder'),
+            7 => $i18n->get('Failed to write file to disk.'),
+            8 => $i18n->get('A PHP extension stopped the file upload.'),
+        ];
+
+        if (isset($files['name']) && \is_array($files['name'])) {
 
             foreach ($files['name'] as $k => $v) {
 
@@ -371,26 +382,26 @@ class Validator extends \Lime\Helper {
                 $allowed  = $this->_getAllowedFileTypes($fieldName);
 
                 $_file  = $this->app->path('#tmp:').'/'.$files['name'][$k];
-                $_isAllowed = $allowed === true ? true : preg_match("/\.({$allowed})$/i", $_file);
-                $_sizeAllowed = $max_size ? filesize($files['tmp_name'][$k]) <= $max_size : true;
+                $_isAllowed = $allowed === true ? true : \preg_match("/\.({$allowed})$/i", $_file);
+                $_sizeAllowed = $max_size ? \filesize($files['tmp_name'][$k]) <= $max_size : true;
 
                 if ($files['error'][$k] || !$_isAllowed || !$_sizeAllowed) {
 
                     $errors[$k] = [];
 
                     if ($files['error'][$k]) {
-                        $errors[$k][] = $this->phpFileUploadErrors[$files['error'][$k]];
+                        $errors[$k][] = $phpFileUploadErrors[$files['error'][$k]];
                     }
 
-                    if (!$_isAllowed)   $errors[$k][] = 'file type is not allowed';
-                    if (!$_sizeAllowed) $errors[$k][] = 'file size is too big';
+                    if (!$_isAllowed)   $errors[$k][] = $i18n->get('File type is not allowed.');
+                    if (!$_sizeAllowed) $errors[$k][] = $i18n->get('File size is too big.');
 
                 }
 
             }
         }
 
-        return compact('files', 'errors');
+        return \compact('files', 'errors');
     }
 
     public function _getMaxUploadSize($fieldName) {
@@ -432,7 +443,7 @@ class Validator extends \Lime\Helper {
 
         if ($allowed == '*') $allowed = true;
         else {
-            $allowed = str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
+            $allowed = \str_replace([' ', ','], ['', '|'], \preg_quote(\is_array($allowed) ? \implode(',', $allowed) : $allowed));
         }
 
         return $allowed;
