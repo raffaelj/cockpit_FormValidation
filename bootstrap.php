@@ -28,12 +28,6 @@ $this->service('mailer', function() {
     return $mailer;
 });
 
-// init + load i18n
-$locale = $this->module('cockpit')->getUser('i18n', $this->helper('i18n')->locale);
-
-if ($translationspath = $this->path("#config:formvalidation/i18n/{$locale}.php")) {
-    $this->helper('i18n')->load($translationspath, $locale);
-}
 
 // validation
 // TODO: create method and call that directly from Forms::submit() instead of using this event
