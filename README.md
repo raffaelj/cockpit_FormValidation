@@ -6,7 +6,7 @@ See also [Cockpit CMS v1 docs](https://v1.getcockpit.com/documentation), [Cockpi
 
 ---
 
-A form validator and form builder for [Cockpit CMS](https://github.com/agentejo/cockpit)
+Form validator and form builder for [Cockpit CMS v1][3]. I mainly use it in combination with [CpMultiplane][4], but it should be compatible with plain rest api usage.
 
 Work in progress! Feel free to contribute with code, bug reports or feature requests.
 
@@ -53,18 +53,24 @@ composer require --ignore-platform-reqs raffaelj/cockpit-formvalidation
 
 ## Requirements:
 
-* Cockpit version >= 0.7.2
-* PECL intl extension (for punycode conversion of urls and mail adresses)
+* Cockpit version >= 0.12.2
+* PECL intl extension is suggested for punycode conversion of urls and mail adresses
 
 ## Features
 
 ### Form builder
 
-I used the cp-fieldsmanager, where all field types are available. In my tests I only used these types:
+**Field types:**
 
+* boolean (check box)
 * text
 * textarea
-* boolean
+* date
+* select
+* multipleselect
+* content block (rich text stored as `field.content`)
+* honeypot (with default attributes for a hidden input field)
+* file (doesn't work out of the box - there is an [example for advanced usage][1] in the CpMultiplane source until I'll update the docs for it here)
 
 It's meant for strings and I don't know (yet), what happens if it should validate arrays.
 
@@ -143,31 +149,13 @@ If `"response": "404"`, sender gets a `404 Path not found` instead of a json res
 
 ## i18n
 
-Add a lang file in `path/to/cockpit/config/formvalidation/i18n/de.php`
-
-Sample for German translation:
-
-```php
-<?php
-
-return [
-    'is required' => 'ist ein Pflichtfeld',
-    'does not exist' => 'existiert nicht',
-    'Hello spambot' => 'Hallo Spambot',
-    'must be mail' => 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
-    'must be phone' => 'Bitte geben Sie eine Telefonnummer ein.',
-    'must be url' => 'muss eine Url sein',
-    'must not be mail' => 'In diesem Feld darf keine E-Mail-Adresse stehen (um Spambots zu verwirren).',
-    'must not be phone' => 'In diesem Feld darf keine Telefonnummer stehen (um Spambots zu verwirren).',
-    'must not be url' => 'In diesem Feld darf keine Url stehen (um Spambots zu verwirren).'
-];
-```
+Use the [Babel addon][5]
 
 ## To do
 
 * [x] allow mail addresses with special chars (punycode) - they are valid, but `filter_var($to, FILTER_VALIDATE_EMAIL)` returns false
   * --> overwrite original submit function again or
-  * --> change the mail validation in cockpit core --> [now in core](https://github.com/agentejo/cockpit/commit/745df212d02be2609b5d13ff81aaa4226f68fb32)
+  * --> change the mail validation in cockpit core --> [now in core][2]
 * [x] i18n of error responses
 * [x] friendly error responses --> use i18n
 * [ ] add a view to include via PHP frontend
@@ -183,7 +171,7 @@ matches:
     * [ ] code
     * [ ] url(s)
     * [ ] string
-  
+
 types:
 
   * [x] mail
@@ -213,4 +201,11 @@ Create a custom mail template in `config/forms/emails/formname.php` to use the s
 
 ## Credits and third party libraries
 
-Icons are from Cockpit CMS v2, (c) Artur Heinze, MIT License
+Icons are from Cockpit CMS v2, (c) Artur Heinze, https://agentejo.com, MIT License
+
+
+[1]: https://github.com/raffaelj/CpMultiplane/blob/master/modules/Multiplane/module/forms.php#L14
+[2]: https://github.com/agentejo/cockpit/commit/745df212d02be2609b5d13ff81aaa4226f68fb32
+[3]: https://github.com/agentejo/cockpit
+[4]: https://github.com/raffaelj/CpMultiplane
+[5]: https://github.com/raffaelj/cockpit_Babel
