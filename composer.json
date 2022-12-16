@@ -1,7 +1,7 @@
 {
     "name": "raffaelj/cockpit-formvalidation",
     "type": "cockpit-module",
-    "description": "A form validator and form builder for Cockpit CMS",
+    "description": "A form validator and form builder for Cockpit CMS v1",
     "keywords": ["cockpit", "forms", "validation"],
     "homepage": "https://github.com/raffaelj/cockpit_FormValidation",
     "license": "MIT",

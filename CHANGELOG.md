@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.1
+
+* UI cleanup
+* messages and i18n cleanup
+* code refactoring (`Helper/Validator.php`)
+* removed loading custom i18n files - Merge your existing formvalidation i18n files with cockpit's default i18n file and/or use the [Babel addon](https://github.com/raffaelj/cockpit_Babel).
+
 ## 0.4.0
 
 * changed priority of validation event on `forms.submit.before` to 100 (before it used the default: 0)
